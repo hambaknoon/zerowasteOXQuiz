@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 통계 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 추가적인 CSS 스타일링 (필요하다면) */
+        .stats-card {
+            transition: transform 0.2s;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 sm:p-8">
+    <div class="container mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">📊 제로 웨이스트 퀴즈 통계</h1>
+            <p class="text-lg text-gray-600">참가자 연령별 분포, 정답률 및 주요 오답 문제를 분석합니다.</p>
+        </header>
+
+        <section id="statistics-section" class="bg-white p-6 rounded-lg shadow-xl mb-10">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">통계 요약</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-center">
+                <div class="col-span-1 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-xl font-medium mb-3 text-gray-700">참가자 연령별 분포 (원 그래프)</h3>
+                    <div id="pie-chart-container" class="w-full h-48 flex justify-center items-center">
+                        <canvas id="age-pie-chart" class="max-w-full max-h-full"></canvas>
+                    </div>
+                </div>
+                <div id="summary-cards" class="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    </div>
+            </div>
+
+            <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 정답률</h3>
+            <div id="age-group-accuracy-display" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                </div>
+
+            <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 세트별 정답률</h3>
+            <div id="set-accuracy-table-container" class="overflow-x-auto border rounded-lg">
+                </div>
+
+            <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 가장 많이 틀린 문제 TOP 5 ❌</h3>
+            <div id="top-5-errors-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                </div>
+        </section>
+
+        <section id="raw-data-section" class="bg-white p-6 rounded-lg shadow-xl mb-10">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">로우 데이터 및 파일</h2>
+
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                <button id="back-to-quiz-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                    ⬅️ 퀴즈 페이지로 돌아가기
+                </button>
+                <button id="export-csv-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                    ⬇️ 로우 데이터 CSV 다운로드
+                </button>
+            </div>
+
+            <div id="raw-data-table-container" class="overflow-x-auto border rounded-lg">
+                </div>
+        </section>
+        
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+    // 퀴즈 페이지의 퀴즈 데이터 정의를 통계 분석을 위해 가져옵니다.
+    // 주의: 'adolescent'와 'adult' 배열은 oxQuiz_WithGPT.html에서 복사하여 채워 넣어야 합니다.
+    const quizData = {
+        elementary: [
+            // Set 0 (Index 0)
+            [
+                { emoji: "🥤", q: "마트 얇은 비닐봉투는 깨끗해도 재활용 안 된다.", a: "O", exp: "얇은 비닐은 분리수거가 어려워요. 장바구니가 최고!" },
+                { emoji: "🐢", q: "일회용 빨대 안 쓰는 건 바다거북 돕는 행동이다.", a: "O", exp: "플라스틱 빨대가 바다 동물을 아프게 해요." },
+                { emoji: "♻️", q: "남긴 음식물 쓰레기는 모두 퇴비로 완벽 재활용된다.", a: "X", exp: "아니에요. 많은 양이 소각되거나 매립되어 환경을 오염시켜요." },
+                { emoji: "✏️", q: "새 학용품 사기 전, 작년 것 먼저 찾는 것이 제로웨이스트다.", a: "O", exp: "'덜 사기(Reduce)'가 재활용보다 더 중요해요." },
+                { emoji: "🧴", q: "깨끗한 플라스틱 용기는 뚜껑 닫아 분리 배출해야 재활용 잘된다.", a: "X", exp: "뚜껑과 몸체 재질이 다를 수 있어 따로 버려야 해요." },
+                { emoji: "🍞", q: "유통기한 지나도 괜찮으면 먹는 것은 낭비 막는 좋은 행동이다.", a: "O", exp: "음식물 낭비를 막는 용감하고 지혜로운 행동이에요!" },
+                { emoji: "🤖", q: "고장 난 장난감은 새것 대신 고쳐 쓰는 것이 환경에 더 좋다.", a: "O", exp: "'다시 쓰기(Reuse)'는 쓰레기를 줄이는 멋진 일이에요." },
+                { emoji: "💰", q: "개인 텀블러 사용은 환경보호 효과는 있지만 경제적 이득은 없다.", a: "X", exp: "아니에요! 대부분의 카페에서 할인 혜택을 줘요." },
+                { emoji: "👶", q: "물티슈나 기저귀를 많이 쓰는 것도 쓰레기 문제의 큰 걸림돌이다.", a: "O", exp: "물티슈는 플라스틱이라 재활용이 안 되는 일반 쓰레기예요." },
+                { emoji: "🤔", q: "오늘 퀴즈 후 필요한 것 1가지만 생각해도 충분하다.", a: "O", exp: "맞아요! 작은 생각의 변화가 가장 중요한 첫걸음이에요." }
+            ],
+            // Set 1 (Index 1)
+            [
+                { emoji: "🧻", q: "젖은 휴지는 깨끗해도 종이로 재활용하면 안 된다.", a: "O", exp: "물에 젖거나 오염된 종이는 재활용이 어려워 일반 쓰레기예요." },
+                { emoji: "🚚", q: "분리수거를 열심히 하면, 쓰레기차가 다니는 에너지는 줄어든다.", a: "X", exp: "쓰레기 '양' 자체를 줄여야 쓰레기차가 덜 다녀서 에너지가 줄어요." },
+                { emoji: "🏷️", q: "포장재의 작은 스티커는 떼지 않고 버려도 재활용에 문제없다.", a: "X", exp: "스티커는 재활용을 방해해요. 꼭 떼서 버려주세요!" },
+                { emoji: "🥕", q: "먹을 만큼만 먹고 남기지 않는 것이 지구 지키는 방법이다.", a: "O", exp: "음식물 쓰레기를 줄이는 것이 환경 보호의 시작이에요." },
+                { emoji: "💔", q: "깨진 유리병은 신문지에 싸서 재활용 쓰레기로 버려야 한다.", a: "X", exp: "깨진 유리는 재활용이 안 되고 위험해요. 일반 쓰레기로 안전하게 버려요." },
+                { emoji: "🧼", q: "펌프 액체 비누보다 고체 비누가 플라스틱 쓰레기를 덜 만든다.", a: "O", exp: "고체 비누는 플라스틱 용기가 필요 없어서 더 좋아요." },
+                { emoji: "👕", q: "새 옷보다 물려 입는 옷이 가장 좋은 제로웨이스트 실천이다.", a: "O", exp: "'다시 쓰기(Reuse)'는 새 물건 만들 때 나오는 쓰레기를 막아줘요." },
+                { emoji: "🐟", q: "내가 쓰는 플라스틱은 아주 작게 부서져 물고기에게 위험할 수 있다.", a: "O", exp: "맞아요. '미세 플라스틱'이 되어 바다 생물을 아프게 해요." },
+                { emoji: "🎉", q: "생일파티 때 일회용 대신 집 접시를 가져가면 쓰레기가 안 생긴다.", a: "O", exp: "조금 불편해도 다시 쓰는 작은 노력이 큰 변화를 만들어요." },
+                { emoji: "🎯", q: "오늘부터 쓰레기를 하나도 만들지 않겠다고 다짐하면 변화가 시작된다.", a: "O", exp: "맞아요! 목표를 정하고 다짐하는 것이 행동 변화의 첫걸음이에요." }
+            ],
+            // Set 2 (Index 2)
+            [
+                { emoji: "🥑", q: "딱딱한 과일 씨앗이나 달걀 껍데기는 음식물 쓰레기로 버려야 한다.", a: "X", exp: "아니에요! 동물이 먹을 수 없는 것들은 일반 쓰레기예요." },
+                { emoji: "🥦", q: "싫어하는 반찬도 조금씩 먹어보는 노력은 음식물 낭비를 줄인다.", a: "O", exp: "음식을 버리는 행동을 줄이고 소중함을 아는 것이 중요해요." },
+                { emoji: "👟", q: "낡고 더러워진 옷도 헌옷 수거함에 넣으면 모두 재활용된다.", a: "X", exp: "아니에요. 심하게 오염된 옷은 재활용 안 되고 버려져요." },
+                { emoji: "🍫", q: "포장이 적은 과자를 고르는 것은 쓰레기를 줄이는 나의 행동이다.", a: "O", exp: "맞아요! 포장이 적은 제품을 선택하는 것도 훌륭한 실천이에요." },
+                { emoji: "🧃", q: "음료수 병은 물로 헹구지 않고 바로 버려도 재활용에 괜찮다.", a: "X", exp: "깨끗하게 헹궈야 다른 재활용품을 오염시키지 않아요." },
+                { emoji: "🛠️", q: "고장 난 물건을 새것 대신 고쳐 쓰면 기분 좋은 경험을 할 수 있다.", a: "O", exp: "물건을 고쳐 쓰며 '다시 쓰기(Reuse)'의 가치를 배울 수 있어요." },
+                { emoji: "⛰️", q: "우리가 쓰레기를 많이 만들면 우리 동네에 쓰레기 산이 생길 수 있다.", a: "O", exp: "맞아요. 쓰레기를 버릴 땅이 점점 부족해지고 있어요." },
+                { emoji: "🛒", q: "엄마에게 장바구니 챙겼냐고 묻는 것은 가족 실천에 도움이 된다.", a: "O", exp: "나의 관심과 질문이 가족 모두의 행동을 바꿀 수 있어요!" },
+                { emoji: "📦", q: "종이 박스에 붙은 테이프는 떼지 않고 버려도 된다.", a: "X", exp: "테이프는 비닐이라 종이 재활용을 방해해요. 꼭 떼야 해요." },
+                { emoji: "⚖️", q: "내가 버린 쓰레기 양을 재보는 숙제는 행동 변화에 좋다.", a: "O", exp: "내가 버린 것을 직접 확인하는 것이 행동 변화에 큰 도움이 돼요." }
+            ]
+        ],
+        adolescent: [ /* oxQuiz_WithGPT.html에서 청소년 퀴즈 데이터 전체를 여기에 붙여넣으세요 */ ],
+        adult: [ /* oxQuiz_WithGPT.html에서 성인 퀴즈 데이터 전체를 여기에 붙여넣으세요 */ ]
+    };
+    
+    const LOCAL_STORAGE_KEY = 'zero_waste_quiz_results';
+    
+    // 퀴즈 페이지로 돌아가기 버튼 이벤트
+    document.getElementById('back-to-quiz-btn').addEventListener('click', () => {
+        window.location.href = 'oxQuiz_WithGPT.html'; 
+    });
+
+    window.onload = () => {
+        let results = [];
+        try {
+            const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+            // 저장된 데이터가 없거나, 구형 데이터(correctLog가 없는)라면 빈 배열 반환
+            // correctLog가 있는 최신 데이터만 필터링해야 세트별/Top5 분석이 가능합니다.
+            results = storedData ? JSON.parse(storedData).filter(r => r.correctLog && r.correctLog.length > 0) : [];
+        } catch (error) {
+            console.error("로컬 저장소 데이터를 로드하는 중 오류 발생:", error);
+            document.getElementById('statistics-section').innerHTML = "<p class='text-red-500'>데이터를 불러올 수 없습니다. 퀴즈를 먼저 진행해주세요.</p>";
+            return;
+        }
+
+        if (results.length === 0) {
+            // 로우 데이터 섹션도 비워줍니다.
+            document.getElementById('raw-data-section').innerHTML = "<p class='text-gray-500 p-4'>저장된 퀴즈 결과가 없거나, 최신 분석에 필요한 데이터(정답 로그)가 부족합니다. 퀴즈를 다시 진행해주세요.</p>";
+            document.getElementById('statistics-section').innerHTML = ""; // 메인 통계 섹션 초기화
+            return;
+        }
+
+        const analysis = analyzeResults(results);
+        
+        // 시각화 및 통계 표시 함수 호출
+        displayPieChart(analysis); 
+        displaySummary(analysis); 
+        displayAgeGroupAccuracyCards(analysis); 
+        displaySetAccuracyTable(analysis); 
+        displayTop5Errors(analysis); 
+
+        // 로우 데이터 표시 및 다운로드
+        displayRawDataTable(results);
+        document.getElementById('export-csv-btn').addEventListener('click', () => {
+            exportToCsv(results); 
+        });
+    };
+    
+    /**
+     * 전체 퀴즈 결과를 분석하여 통계 데이터를 생성합니다. (Top 5를 위한 상세 분석 포함)
+     */
+    function analyzeResults(results) {
+        const stats = {
+            totalParticipants: results.length,
+            ageGroupCounts: { elementary: 0, adolescent: 0, adult: 0 },
+            ageGroupScores: { 
+                elementary: { totalScore: 0, totalQuestions: 0 }, 
+                adolescent: { totalScore: 0, totalQuestions: 0 }, 
+                adult: { totalScore: 0, totalQuestions: 0 } 
+            },
+            setScores: { elementary: {}, adolescent: {}, adult: {} }, 
+            questionErrors: { elementary: {}, adolescent: {}, adult: {} }, 
+            totalScore: 0,
+            totalQuestions: 0
+        };
+        const ageGroups = ['elementary', 'adolescent', 'adult'];
+
+        results.forEach(res => {
+            const age = res.ageGroup;
+            const setIndex = res.quizSetIndex;
+
+            if (!ageGroups.includes(age)) return;
+
+            // 1. 기본 통계
+            stats.ageGroupCounts[age]++;
+            stats.totalScore += res.score;
+            stats.totalQuestions += res.totalQuestions;
+            stats.ageGroupScores[age].totalScore += res.score;
+            stats.ageGroupScores[age].totalQuestions += res.totalQuestions;
+
+            // 2. 세트별 통계
+            const setKey = setIndex;
+            if (!stats.setScores[age][setKey]) {
+                stats.setScores[age][setKey] = { score: 0, questions: 0, participants: 0 };
+            }
+            stats.setScores[age][setKey].score += res.score;
+            stats.setScores[age][setKey].questions += res.totalQuestions;
+            stats.setScores[age][setKey].participants += 1;
+
+
+            // 3. 문제별 오답 (Top 5를 위한 핵심 로직)
+            // quizData[age]가 정의되어 있어야 합니다! (문제 2 해결 필요)
+            const quizSet = quizData[age] ? quizData[age][setIndex] : null; 
+            if (quizSet && res.correctLog && res.correctLog.length === quizSet.length) {
+                res.correctLog.forEach((isCorrect, qIndex) => {
+                    if (!isCorrect) { 
+                        const questionIdentifier = `${setKey}-${qIndex}`;
+                        if (!stats.questionErrors[age][questionIdentifier]) {
+                            const q = quizSet[qIndex];
+                            stats.questionErrors[age][questionIdentifier] = {
+                                q: q.q,
+                                emoji: q.emoji,
+                                errors: 0
+                            };
+                        }
+                        stats.questionErrors[age][questionIdentifier].errors += 1;
+                    }
+                });
+            }
+        });
+
+        // 4. 정답률 계산
+        stats.overallAccuracy = stats.totalQuestions > 0 ? ((stats.totalScore / stats.totalQuestions) * 100).toFixed(1) : 0;
+        
+        ageGroups.forEach(age => {
+            const data = stats.ageGroupScores[age];
+            data.accuracy = data.totalQuestions > 0 ? ((data.totalScore / data.totalQuestions) * 100).toFixed(1) : 0;
+            
+            Object.values(stats.setScores[age]).forEach(setData => {
+                setData.accuracy = setData.questions > 0 ? ((setData.score / setData.questions) * 100).toFixed(1) : 0;
+            });
+        });
+
+        return stats;
+    }
+
+    /**
+     * 참가자 연령별 분포를 원 그래프로 표시합니다. (Chart.js 사용)
+     */
+    function displayPieChart(analysis) {
+        const total = analysis.totalParticipants;
+        const counts = [
+            analysis.ageGroupCounts.elementary, 
+            analysis.ageGroupCounts.adolescent, 
+            analysis.ageGroupCounts.adult
+        ];
+
+        const ctx = document.getElementById('age-pie-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['초등', '청소년', '성인'],
+                datasets: [{
+                    data: counts,
+                    backgroundColor: ['#FBBF24', '#22D3EE', '#F87171'], 
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.raw !== null) {
+                                    const percentage = total > 0 ? ((context.raw / total) * 100).toFixed(1) : 0;
+                                    label += `${context.raw}명 (${percentage}%)`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 통계 요약 카드 (전체 정답률 및 연령별 분포 숫자)를 표시합니다.
+     */
+    function displaySummary(analysis) {
+        const cardsContainer = document.getElementById('summary-cards');
+        cardsContainer.innerHTML = ''; 
+
+        const total = analysis.totalParticipants;
+        const countE = analysis.ageGroupCounts.elementary;
+        const countA = analysis.ageGroupCounts.adolescent;
+        const countAd = analysis.ageGroupCounts.adult;
+
+        const createCard = (title, value, color, description = '') => `
+            <div class="stats-card bg-white p-4 rounded-lg border-b-4 border-${color}-500 shadow-md">
+                <p class="text-sm font-medium text-gray-500">${title}</p>
+                <p class="text-2xl font-extrabold text-${color}-600 mt-1">${value}</p>
+                ${description ? `<p class="text-xs text-gray-500 mt-1">${description}</p>` : ''}
+            </div>
+        `;
+        
+        cardsContainer.innerHTML += createCard('총 참가 횟수', `${total}회`, 'indigo');
+        cardsContainer.innerHTML += createCard('전체 정답률', `${analysis.overallAccuracy}%`, 'green');
+        cardsContainer.innerHTML += createCard('초등 참가자 수', `${countE}명`, 'yellow', `(${total > 0 ? ((countE / total) * 100).toFixed(1) : 0}%)`);
+        cardsContainer.innerHTML += createCard('청소년/성인 참가자 수', `청소년: ${countA}명 / 성인: ${countAd}명`, 'purple');
+    }
+
+    /**
+     * 연령별 정답률 카드만 표시합니다.
+     */
+    function displayAgeGroupAccuracyCards(analysis) {
+        const displayContainer = document.getElementById('age-group-accuracy-display');
+        displayContainer.innerHTML = '';
+        
+        const ageData = analysis.ageGroupScores;
+        
+        const ageCards = [
+            { age: 'elementary', label: '초등 정답률', color: 'yellow', acc: ageData.elementary.accuracy },
+            { age: 'adolescent', label: '청소년 정답률', color: 'cyan', acc: ageData.adolescent.accuracy },
+            { age: 'adult', label: '성인 정답률', color: 'red', acc: ageData.adult.accuracy },
+        ];
+
+        ageCards.forEach(card => {
+            displayContainer.innerHTML += `
+                <div class="stats-card bg-white p-4 rounded-lg border-l-4 border-${card.color}-500 shadow-md">
+                    <p class="text-sm font-medium text-gray-500">${card.label}</p>
+                    <p class="text-3xl font-extrabold text-${card.color}-600 mt-1">${card.acc}%</p>
+                </div>
+            `;
+        });
+    }
+
+    /**
+     * 연령별 세트별 정답률 테이블을 표시합니다.
+     */
+    function displaySetAccuracyTable(analysis) {
+        const tableContainer = document.getElementById('set-accuracy-table-container');
+        let tableHTML = `
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연령대</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">퀴즈 세트 (종류)</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">참가 횟수</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 정답 / 총 문제</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">정답률 (%)</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+        `;
+
+        const ageLabels = { elementary: '초등', adolescent: '청소년', adult: '성인' };
+        const setLabels = ['Set 1', 'Set 2', 'Set 3'];
+
+        ['elementary', 'adolescent', 'adult'].forEach(age => {
+            const setScores = analysis.setScores[age];
+            const setIndices = Object.keys(setScores).sort((a, b) => Number(a) - Number(b));
+
+            setIndices.forEach(setIndex => {
+                const setData = setScores[setIndex];
+                
+                tableHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ageLabels[age]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setLabels[setIndex] || `Set ${Number(setIndex) + 1}`}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setData.participants}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setData.score} / ${setData.questions}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">${setData.accuracy}%</td>
+                    </tr>
+                `;
+            });
+        });
+
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
+        tableContainer.innerHTML = tableHTML;
+    }
+
+    /**
+     * 연령별 Top 5 오답 문제를 표시합니다.
+     */
+    function displayTop5Errors(analysis) {
+        const top5Container = document.getElementById('top-5-errors-container');
+        top5Container.innerHTML = '';
+
+        const ageLabels = { elementary: '초등', adolescent: '청소년', adult: '성인' };
+
+        ['elementary', 'adolescent', 'adult'].forEach(age => {
+            const errorMap = analysis.questionErrors[age];
+            
+            const sortedErrors = Object.values(errorMap)
+                .sort((a, b) => b.errors - a.errors)
+                .slice(0, 5); 
+
+            let listItems = sortedErrors.map((item, index) => `
+                <li class="p-3 border-b last:border-b-0">
+                    <span class="font-bold text-lg text-red-600 mr-2">#${index + 1}</span>
+                    <span class="text-gray-900">${item.emoji} ${item.q.length > 30 ? item.q.substring(0, 30) + '...' : item.q}</span>
+                    <span class="float-right text-sm font-semibold text-red-500">${item.errors}회 오답</span>
+                </li>
+            `).join('');
+
+            top5Container.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500">
+                    <h4 class="text-lg font-bold text-gray-700 mb-3">${ageLabels[age]} 오답 TOP 5</h4>
+                    <ul class="divide-y divide-gray-200">
+                        ${listItems || '<li class="text-gray-500 p-3">오답 데이터가 충분하지 않습니다.</li>'}
+                    </ul>
+                </div>
+            `;
+        });
+    }
+
+    /**
+     * 로우 데이터를 테이블로 표시합니다. 
+     */
+    function displayRawDataTable(results) {
+        const tableContainer = document.getElementById('raw-data-table-container');
+        let tableHTML = `
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연령대</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">세트 Index</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">점수</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">정답 상세</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">날짜</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+        `;
+
+        [...results].reverse().forEach(res => {
+            const ageLabel = { elementary: '초등', adolescent: '청소년', adult: '성인' }[res.ageGroup] || res.ageGroup;
+            const formattedDate = new Date(res.timestamp).toLocaleString('ko-KR', { 
+                year: '2-digit', month: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
+            });
+            // 정답 상세 (O/X 문자열로 표시)
+            const correctDetail = res.correctLog ? res.correctLog.map(c => c ? 'O' : 'X').join('') : 'N/A';
+
+            tableHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900">${res.id.substring(0, 10)}...</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ageLabel}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${res.quizSetIndex}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-700">${res.score} / ${res.totalQuestions}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">${correctDetail}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
+        tableContainer.innerHTML = tableHTML;
+    }
+
+    /**
+     * 로우 데이터를 CSV 파일로 내보냅니다. (다운로드 버그 수정 및 BOM 추가)
+     */
+    function exportToCsv(results) {
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM 추가 (한글 깨짐 방지)
+        
+        // 헤더
+        const headers = ["참가자 ID", "연령대", "퀴즈 세트 Index", "점수", "총 문제 수", "정답 상세 (O=정답, X=오답)", "날짜 (ISO)"];
+        csvContent += headers.join(",") + "\n";
+        
+        // 데이터
+        results.forEach(res => {
+            const correctDetail = res.correctLog ? res.correctLog.map(c => c ? 'O' : 'X').join('') : 'N/A';
+            
+            const row = [
+                `"${res.id}"`, 
+                res.ageGroup,
+                res.quizSetIndex,
+                res.score,
+                res.totalQuestions,
+                `"${correctDetail}"`, 
+                res.timestamp
+            ];
+            // 따옴표 처리 및 줄바꿈 방지
+            csvContent += row.map(item => {
+                if (typeof item === 'string') {
+                    // 내부 따옴표 이스케이프: ""로 변환
+                    return `"${item.replace(/"/g, '""')}"`;
+                }
+                return item;
+            }).join(",") + "\n";
+        });
+
+        // 다운로드 실행
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `quiz_stats_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    </script>
+</body>
+</html>
