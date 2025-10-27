@@ -44,36 +44,50 @@
             adolescent: "나는 오늘부터 물건을 재사용하여 쓰레기를 줄이는 멋진 행동가!",
             adult: "필요하지 않은 것은 NO! 지갑을 열기 전에 한 번 더 생각합니다."
         };
-
-         /**
- * quizData.json 파일을 비동기적으로 불러옵니다.
+// 2. 퀴즈 데이터 전역 변수 선언 (데이터를 저장할 변수)
+let quizData = null; // 데이터를 불러오기 전까지 null 상태 유지
+        
+ /**
+ * oxquizData.json 파일을 비동기적으로 불러와 quizData 변수에 저장합니다.
  */
 async function loadQuizData() {
     try {
-        const response = await fetch('./oxquizData.json');
+        // 지정된 파일명 'oxquizData.json' 사용
+        const response = await fetch('./oxquizData.json'); 
         if (!response.ok) {
             throw new Error(`HTTP 오류: ${response.status}`);
         }
-        return await response.json();
+        quizData = await response.json(); // 로드 성공 시 전역 변수에 할당
+        return true;
     } catch (error) {
         console.error("퀴즈 데이터 로딩 실패:", error);
-        alert("퀴즈 데이터를 불러오는 데 실패했습니다. 파일을 확인해 주세요.");
-        return null;
+        alert("퀴즈 데이터를 불러오는 데 실패했습니다. 'oxquizData.json' 파일을 확인해 주세요.");
+        return false;
     }
+}
 
-    // 퀴즈 페이지의 메인 시작 함수를 변경합니다.
+/**
+ * 퀴즈 시작 시 모든 초기화 작업을 수행하는 메인 비동기 함수
+ */
 async function initQuiz() {
-    const quizData = await loadQuizData(); // JSON 데이터를 먼저 불러옵니다.
-    if (!quizData) return; // 데이터 로딩 실패 시 중단
+    const dataLoaded = await loadQuizData(); // 데이터 로딩 시도
 
-    // quizData를 전역 변수나 필요한 함수에 전달하여 사용합니다.
-    // 기존 코드에서 quizData를 전역으로 사용했다면 아래와 같이 전역 변수로 할당할 수 있습니다.
-    window.QUIZ_DATA = quizData; 
-
-    // 모든 이벤트 리스너 및 초기화 로직을 이 안에서 호출하거나, 
-    // loadQuizData가 완료된 후에 실행되도록 비동기적으로 설계해야 합니다.
-
-    // 예: showIntroScreen(quizData); // 로딩된 데이터를 사용하여 화면을 초기화
+    if (!dataLoaded) {
+        // 데이터 로딩 실패 시 퀴즈 진행을 막거나 오류 메시지 표시
+        return; 
+    }
+    
+    // --- **이후 기존 퀴즈 초기화 로직을 이 위치에 배치합니다** ---
+    
+    // 예: 모든 버튼 이벤트 리스너를 설정하고, 초기 화면을 표시하는 함수 호출
+    // startQuizProcess(); // 기존에 퀴즈를 시작하던 함수가 있다면 이 위치에서 호출합니다.
+    
+    // (기존 코드에서 quizData를 참조하던 모든 부분은 이제 전역 변수 quizData를 사용하게 됩니다.)
+    
+    // 예시: 
+    if (ageSelect.value && setSelect.value) {
+        selectAgeAndSet(); // 퀴즈 시작 함수 호출
+    }
 }
 
 // 페이지 로드 시 initQuiz 호출 (비동기)
