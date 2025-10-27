@@ -50,7 +50,7 @@
  */
 async function loadQuizData() {
     try {
-        const response = await fetch('./quizData.json');
+        const response = await fetch('./oxquizData.json');
         if (!response.ok) {
             throw new Error(`HTTP 오류: ${response.status}`);
         }
