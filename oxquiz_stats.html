@@ -100,14 +100,17 @@
         // -------------------------------------------------------------------------
         // 2. 퀴즈 데이터 (Top 5 분석을 위해 전체 데이터 포함)
         // -------------------------------------------------------------------------
-        // 2-1 단계의 loadQuizData 함수를 여기에 복사해서 붙여넣습니다.
+        /**
+ * oxquizData.json 파일을 비동기적으로 불러옵니다.
+ */
 async function loadQuizData() {
     try {
-        const response = await fetch('./oxquizData.json');
+        // 지정된 파일명 'oxquizData.json' 사용
+        const response = await fetch('./oxquizData.json'); 
         if (!response.ok) {
             throw new Error(`HTTP 오류: ${response.status}`);
         }
-        return await response.json();
+        return await response.json(); // 데이터를 반환
     } catch (error) {
         console.error("퀴즈 데이터 로딩 실패:", error);
         return null; // 실패 시 null 반환
@@ -501,25 +504,29 @@ function analyzeResults(results, quizData) {
         // -------------------------------------------------------------------------
         // 5. 초기화 및 메인 로직 실행
         // -------------------------------------------------------------------------
-        // 기존 window.onload 대신 DOMContentLoaded를 사용합니다.
+        // ---------------------------------------------
+// 3. 페이지 로드 로직 수정 (데이터 로딩을 비동기로 처리)
+// ---------------------------------------------
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // 퀴즈 페이지로 돌아가는 버튼 경로 수정
     document.getElementById('back-to-quiz-btn').addEventListener('click', () => {
-        window.location.href = 'zerowasteOXQuiz.html'; 
+        window.location.href = 'zerowasteOXQuiz.html'; // 파일명 수정 적용
     });
 
-    // 1. JSON 파일에서 퀴즈 데이터 로드 (분석에 필요)
-    const quizData = await loadQuizData(); // <-- 추가된 핵심 로직
+    // 1. **JSON 파일에서 퀴즈 데이터 로드**
+    const quizData = await loadQuizData(); 
     if (!quizData) {
         document.getElementById('loading-message').textContent = "퀴즈 데이터 로딩 실패. JSON 파일을 확인하세요.";
         return;
     }
 
-            // 1. Firebase에서 결과 데이터 로드
-            const results = await fetchResultsFromFirestore();
-            
-            // 로딩 메시지 제거 및 콘텐츠 표시
-            document.getElementById('loading-message').classList.add('hidden');
-            document.getElementById('stats-content').classList.remove('hidden');
+            // 2. Firebase에서 결과 데이터 로드 (기존 로직)
+    const results = await fetchResultsFromFirestore();
+    
+    // 로딩 메시지 제거 및 콘텐츠 표시 (기존 로직)
+    document.getElementById('loading-message').classList.add('hidden');
+    document.getElementById('stats-content').classList.remove('hidden');
 
             if (results.length === 0) {
                 document.getElementById('raw-data-section').innerHTML = "<p class='text-gray-500 p-4'>저장된 퀴즈 결과가 없거나, 최신 분석에 필요한 데이터(정답 로그)가 부족합니다. 퀴즈를 먼저 진행해주세요.</p>";
