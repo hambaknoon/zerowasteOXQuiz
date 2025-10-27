@@ -3,8 +3,8 @@
 <head>
     <script type="module">
         // Firebase v9+ 모듈 SDK 임포트
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
         // import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js"; // 선택 사항
 
         // Your web app's Firebase configuration
@@ -29,6 +29,10 @@
         // 전역 범위에서 사용될 변수들을 window 객체에 할당 (quiz.js에서 참조하기 위해)
         window.db = db;
         window.RESULTS_COLLECTION = RESULTS_COLLECTION;
+
+        // ⭐ ⭐ ⭐ 추가된 부분: quiz.js에서 Firestore 함수를 호출할 수 있도록 window에 등록
+    window.addDoc = addDoc;
+    window.collection = collection; // <--- 이 두 줄이 누락되어 있었을 가능성 높음
         
         // quiz.js 파일을 모듈로 임포트 (defer 속성 없이 모듈 스크립트 블록 내에서 실행 보장)
         import('./quiz.js');
