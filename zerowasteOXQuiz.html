@@ -34,7 +34,157 @@
         import('./quiz.js');
     </script> 
 
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제로웨이스트 OX 퀴즈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+    body {
+font-family: 'Inter', 'Nanum Gothic', sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+/* 플래시카드 뒤집기 애니메이션 컨테이너 */
+.perspective {
+perspective: 1000px;
+}
+.card-inner {
+position: relative;
+width: 100%;
+height: 100%;
+transition: transform 0.6s;
+transform-style: preserve-3d;
+}
+.is-flipped {
+transform: rotateY(180deg);
+}
+.card-front, .card-back {
+position: absolute;
+width: 100%;
+height: 100%;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+border-radius: 0.75rem; 
+border: 4px solid transparent; 
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.card-back {
+transform: rotateY(180deg);
+background-image: linear-gradient(to top right, #e0f2fe, #f0f9ff);
+}
+.answer-btn {
+transition: background-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.answer-btn:active {
+transform: scale(0.98);
+box-shadow: none;
+}
+.card-correct {
+border-color: #22c55e !important;
+}
+.card-incorrect {
+border-color: #ef4444 !important;
+}
+    </style>
 </head>
 <body class="bg-emerald-50 text-gray-800">
+    <div class="min-h-screen w-full flex items-center justify-center p-4">
+
+<div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
+<div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+<div class="text-6xl md:text-7xl mb-4">🌍</div>
+<h1 class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">환경 영웅 OX 퀴즈</h1>
+<p class="text-gray-600 mb-8 text-lg">퀴즈에 참여할 그룹을 선택해주세요!</p>
+<div class="grid grid-cols-1 gap-4">
+<button data-age="elementary" class="age-select-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+👨‍👩‍👧‍👦 초등학생 (꼬마 영웅)
+</button>
+<button data-age="adolescent" class="age-select-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+🧑‍🎓 청소년 (그린 리더)
+</button>
+<button data-age="adult" class="age-select-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+👩‍💼 성인 (제로 챔피언)
+</button>
+</div>
+<p class="text-xs text-gray-400 mt-6">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다.</p>
+</div>
+</div>
+
+<div id="quiz-screen" class="w-full max-w-lg md:max-w-xl hidden">
+<div class="flex justify-between items-center mb-4 px-2">
+<div>
+<h2 id="quiz-title" class="text-xl md:text-2xl font-bold text-emerald-700">퀴즈 제목</h2>
+<p id="question-number-text" class="text-gray-500 font-semibold">문제 1 / 10</p>
+</div>
+<button id="back-to-start-btn" class="text-sm text-gray-500 hover:text-gray-700 font-semibold py-2 px-3 rounded-lg bg-white/70 hover:bg-white transition-all shadow-md">
+처음으로
+</button>
+</div>
+
+<div class="perspective h-[450px] md:h-[500px]">
+<div id="card-inner" class="card-inner h-full">
+<div class="card-front bg-white p-6 md:p-8">
+<div id="card-emoji-front" class="text-7xl md:text-8xl text-center pt-8 pb-4">
+</div>
+<p id="question-text" class="text-xl md:text-2xl font-bold text-center flex-grow flex items-center justify-center leading-relaxed">
+문제 텍스트
+</p>
+<p class="text-center text-gray-400 text-sm font-medium">O / X 버튼을 눌러주세요</p>
+</div>
+
+<div id="card-back" class="card-back p-6 md:p-8">
+<div class="text-center">
+<div id="answer-emoji" class="text-7xl md:text-8xl mb-4">
+</div>
+<h3 id="answer-status-text" class="text-3xl md:text-4xl font-extrabold mb-2">정답입니다!</h3>
+<h4 id="correct-answer-text" class="text-xl md:text-2xl font-bold text-gray-700 mb-4">정답: O</h4>
+</div>
+<p id="explanation-text" class="text-base md:text-2xl font-bold text-gray-700 text-center leading-relaxed flex-grow flex items-center justify-center">
+해설 텍스트
+</p>
+<div class="text-center text-gray-500 text-sm font-medium pt-4">
+'다음 문제' 버튼을 눌러주세요
+</div>
+</div>
+</div>
+</div>
+
+<div id="controls-container" class="mt-6">
+<div id="answer-btns" class="grid grid-cols-2 gap-4">
+<button id="o-btn" class="answer-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-6 rounded-xl text-4xl shadow-lg transition-transform transform hover:scale-105">O</button>
+<button id="x-btn" class="answer-btn bg-red-500 hover:bg-red-600 text-white font-bold py-6 rounded-xl text-4xl shadow-lg transition-transform transform hover:scale-105">X</button>
+</div>
+<button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+다음 문제
+</button>
+</div>
+</div>
+
+<div id="results-screen" class="w-full max-w-lg md:max-w-xl text-center hidden">
+<div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+<div id="result-emoji" class="text-6xl md:text-7xl mb-4">🎉</div>
+<h1 class="text-2xl md:text-3xl font-bold text-emerald-700 mb-2">퀴즈 완료!</h1>
+<p id="score-text" class="text-gray-800 mb-6 text-2xl font-semibold">10 문제 중 8 개 정답!</p>
+<div class="bg-emerald-50 p-4 rounded-lg mb-8 border border-emerald-200">
+<h3 class="font-bold text-emerald-800 mb-2 text-lg">📝 나의 제로웨이스트 다짐</h3>
+<p id="pledge-text" class="text-gray-700 font-medium text-base leading-relaxed">
+다짐 문구
+</p>
+</div>
+<p id="local-id-display" class="text-xs text-gray-400 mt-4 mb-4 break-words">
+</p>
+
+<div class="space-y-4">
+<button id="restart-btn" class="w-full bg-yellow-500 hover:bg-yellow-550 text-gray font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+처음으로 돌아가기
+</button>
+
+</div>
+</div>
+</div>
+</div>
     </body>
 </html>
