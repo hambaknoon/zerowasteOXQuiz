@@ -166,7 +166,8 @@
         
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
-        cardFront.classList.remove('card-correct', 'card-incorrect');
+        // ⭐ 수정: cardFront -> cardBack 에서 클래스 제거 (테두리 색상 리셋)
+        cardBack.classList.remove('card-correct', 'card-incorrect');
         answerBtnsContainer.classList.remove('hidden');
         nextBtn.classList.add('hidden');
 
@@ -190,11 +191,15 @@
             score++;
             answerStatusText.textContent = "정답입니다! 🎉";
             answerEmoji.textContent = "✅";
-            cardFront.classList.add('card-correct');
+            
+            // ⭐ 수정: cardFront -> cardBack 에 클래스 추가 (초록 테두리)
+            cardBack.classList.add('card-correct');
         } else {
             answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
             answerEmoji.textContent = "❌";
-            cardFront.classList.add('card-incorrect');
+            
+            // ⭐ 수정: cardFront -> cardBack 에 클래스 추가 (빨강 테두리)
+            cardBack.classList.add('card-incorrect');
         }
 
         // 로그 기록
@@ -290,6 +295,9 @@
         pledgeText = document.getElementById('pledge-text');
         answerStatusText = document.getElementById('answer-status-text');
         correctAnswerText = document.getElementById('correct-answer-text');
+
+        // cardBack 변수 할당 추가
+        cardBack = document.getElementById('card-back'); // ⭐ cardBack 변수 할당
         
         // null 체크를 통해 요소가 존재하는지 확인 후 접근
         if (cardInner) {
