@@ -166,8 +166,8 @@
         
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
-        // ⭐ 수정: cardFront -> cardBack 에서 클래스 제거 (테두리 색상 리셋)
-        cardBack.classList.remove('card-correct', 'card-incorrect');
+        // ⭐ 수정: cardBack 대신 cardInner 에서 클래스 제거 (테두리 색상 리셋)
+        cardInner.classList.remove('card-correct', 'card-incorrect');
         answerBtnsContainer.classList.remove('hidden');
         nextBtn.classList.add('hidden');
 
@@ -192,14 +192,14 @@
             answerStatusText.textContent = "정답입니다! 🎉";
             answerEmoji.textContent = "✅";
             
-            // ⭐ 수정: cardFront -> cardBack 에 클래스 추가 (초록 테두리)
-            cardBack.classList.add('card-correct');
+            // ⭐ 수정: cardBack 대신 cardInner 에 클래스 추가 (초록 테두리)
+            cardInner.classList.add('card-correct');
         } else {
             answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
             answerEmoji.textContent = "❌";
             
-            // ⭐ 수정: cardFront -> cardBack 에 클래스 추가 (빨강 테두리)
-            cardBack.classList.add('card-incorrect');
+            // ⭐ 수정: cardBack 대신 cardInner 에 클래스 추가 (빨강 테두리)
+            cardInner.classList.add('card-incorrect');
         }
 
         // 로그 기록
