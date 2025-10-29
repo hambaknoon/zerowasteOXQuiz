@@ -110,7 +110,7 @@
     let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle; 
     let cardInner, questionNumberText, questionText, explanationText, answerBtnsContainer;
     let scoreText, resultEmoji, pledgeText, answerStatusText, correctAnswerText;
-    let cardFront, cardEmojiFront, answerEmoji, localIdDisplay;
+    let cardFront, cardEmojiFront, answerEmoji, localIdDisplay, cardBack; // ⭐ cardBack 변수 선언 추가
 
 
     // ----------------------------------------------------
@@ -163,12 +163,16 @@
     // 문제 로드 함수
     function loadQuestion() {
         const question = currentQuizSet[currentQuestionIndex];
-        
+		
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
         cardFront.classList.remove('card-correct', 'card-incorrect');
-        answerBtnsContainer.classList.remove('hidden');
-        nextBtn.classList.add('hidden');
+        // ⭐ 수정: 다음 문제 로드시 OX 버튼을 다시 보이게 합니다.
+ 	   answerBtnsContainer.classList.remove('hidden');
+        // ⭐ 수정: cardBack 에서 테두리 클래스 제거
+    	cardBack.classList.remove('card-correct', 'card-incorrect');
+		
+		nextBtn.classList.add('hidden');
 
         // 내용 업데이트
         questionNumberText.textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
@@ -185,31 +189,36 @@
         const question = currentQuizSet[currentQuestionIndex];
         const isCorrect = (userAnswer === question.a);
         
-        // 상태 업데이트
+		// 상태 업데이트
         if (isCorrect) {
             score++;
-            answerStatusText.textContent = "정답입니다! 🎉";
             answerEmoji.textContent = "✅";
-            cardFront.classList.add('card-correct');
+	   		answerStatusText.textContent = "정답입니다! 🎉";
+        
+	   		// ⭐ 수정: cardBack 에 초록색 테두리 클래스 추가
+        	cardBack.classList.add('card-correct');
+
         } else {
             answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
             answerEmoji.textContent = "❌";
-            cardFront.classList.add('card-incorrect');
+
+			// ⭐ 수정: cardBack 에 빨간색 테두리 클래스 추가
+        	cardBack.classList.add('card-incorrect');
         }
 
         // 로그 기록
         answerLog.push({ qIndex: currentQuestionIndex, q: question.q, u: userAnswer, a: question.a });
         correctLog.push(isCorrect);
-        
-        // 카드 뒤집기
+
+		// 카드 뒤집기
         correctAnswerText.textContent = `정답: ${question.a}`;
         cardInner.classList.add('is-flipped');
-        
-        // 버튼 상태 변경
+
+		// 버튼 상태 변경
         oBtn.disabled = true;
         xBtn.disabled = true;
         answerBtnsContainer.classList.add('hidden');
-        nextBtn.classList.remove('hidden');
+        nextBtn.classList.remove('hidden');		
     }
 
     // 다음 문제/결과 화면 함수
@@ -294,6 +303,7 @@
         // null 체크를 통해 요소가 존재하는지 확인 후 접근
         if (cardInner) {
             cardFront = cardInner.querySelector('.card-front');
+			cardBack = document.getElementById('card-back'); // ⭐ cardBack 변수 할당 추가
         } else {
             console.error("DOM: 'card-inner' 요소를 찾을 수 없습니다.");
             return; // 퀴즈 실행 중단
@@ -405,7 +415,7 @@ border-color: #ef4444 !important;
                         👩‍💼 성인 (제로 챔피언)
                     </button>
                 </div>
-                <p class="text-xs text-gray-400 mt-6" ">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다.style="display: none; 잘 되어야 함.</p>
+                <p class="text-xs text-gray-400 mt-6" style="display: none;">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
             </div>
         </div>
 
