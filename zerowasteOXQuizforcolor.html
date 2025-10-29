@@ -110,7 +110,7 @@
     let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle; 
     let cardInner, questionNumberText, questionText, explanationText, answerBtnsContainer;
     let scoreText, resultEmoji, pledgeText, answerStatusText, correctAnswerText;
-    let cardFront, cardEmojiFront, answerEmoji, localIdDisplay;
+    let cardFront, cardEmojiFront, answerEmoji, localIdDisplay, cardBack; // ⭐ cardBack 변수 선언 추가
 
 
     // ----------------------------------------------------
@@ -169,8 +169,11 @@
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
         cardFront.classList.remove('card-correct', 'card-incorrect');
-        answerBtnsContainer.classList.remove('hidden');
-        nextBtn.classList.add('hidden');
+        //answerBtnsContainer.classList.remove('hidden');
+        // ⭐ 수정: cardBack 에서 테두리 클래스 제거
+    	cardBack.classList.remove('card-correct', 'card-incorrect');
+		
+		nextBtn.classList.add('hidden');
 
         // 내용 업데이트
         questionNumberText.textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
@@ -202,21 +205,17 @@
         if (isCorrect) {
             score++;
             answerEmoji.textContent = "✅";
-	    answerStatusText.textContent = "정답입니다! 🎉";
-
-            answerStatusText.classList.remove('text-red-600');
-            answerStatusText.classList.add('text-green-600’);
+	   		answerStatusText.textContent = "정답입니다! 🎉";
         
-	    cardBack.classList.add('card-correct');
-            cardFront.classList.add('card-correct');
+	   		// ⭐ 수정: cardBack 에 초록색 테두리 클래스 추가
+        	cardBack.classList.add('card-correct');
 
         } else {
             answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
             answerEmoji.textContent = "❌";
-            answerStatusText.classList.remove('text-green-600');
-            answerStatusText.classList.add('text-red-600');
-            cardBack.classList.add('card-incorrect');
-            cardFront.classList.add('card-incorrect');
+
+			// ⭐ 수정: cardBack 에 빨간색 테두리 클래스 추가
+        	cardBack.classList.add('card-incorrect');
         }
 
         // 로그 기록
@@ -309,6 +308,7 @@
         // null 체크를 통해 요소가 존재하는지 확인 후 접근
         if (cardInner) {
             cardFront = cardInner.querySelector('.card-front');
+			cardBack = document.getElementById('card-back'); // ⭐ cardBack 변수 할당 추가
         } else {
             console.error("DOM: 'card-inner' 요소를 찾을 수 없습니다.");
             return; // 퀴즈 실행 중단
