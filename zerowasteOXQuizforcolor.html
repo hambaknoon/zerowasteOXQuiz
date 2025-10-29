@@ -163,8 +163,6 @@
     // 문제 로드 함수
     function loadQuestion() {
         const question = currentQuizSet[currentQuestionIndex];
-
-		alert("loadQuestion");
 		
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
@@ -191,17 +189,7 @@
         const isCorrect = (userAnswer === question.a);
         
 		alert("checkAnswer");
-		
-        // 버튼 상태 변경
-        oBtn.disabled = true;
-        xBtn.disabled = true;
-        answerBtnsContainer.classList.add('hidden');
-        nextBtn.classList.remove('hidden');
-
-		// 카드 뒤집기
-        correctAnswerText.textContent = `정답: ${question.a}`;
-
-        // 상태 업데이트
+		// 상태 업데이트
         if (isCorrect) {
             score++;
             answerEmoji.textContent = "✅";
@@ -221,9 +209,16 @@
         // 로그 기록
         answerLog.push({ qIndex: currentQuestionIndex, q: question.q, u: userAnswer, a: question.a });
         correctLog.push(isCorrect);
-        
+
+		// 카드 뒤집기
+        correctAnswerText.textContent = `정답: ${question.a}`;
         cardInner.classList.add('is-flipped');
 
+		// 버튼 상태 변경
+        oBtn.disabled = true;
+        xBtn.disabled = true;
+        answerBtnsContainer.classList.add('hidden');
+        nextBtn.classList.remove('hidden');		
     }
 
     // 다음 문제/결과 화면 함수
