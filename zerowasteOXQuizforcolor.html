@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제로웨이스트 OX 퀴즈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    
+   <script type="module">
+    // Firebase SDK V9 Module Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyB-gGpaopmgAp0JAhhj7ghgB-0wbGeTWlE",
+        authDomain: "moupcycle-3ae84.firebaseapp.com",
+        projectId: "moupcycle-3ae84",
+        storageBucket: "moupcycle-3ae84.firebasestorage.app",
+        messagingSenderId: "808583858427",
+        appId: "1:808583858427:web:36f2d7a75ec45bf4bf885e",
+        measurementId: "G-ZDBL0Y0RX4"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const RESULTS_COLLECTION = 'quiz_results';
+
+    // ----------------------------------------------------
+    // 💡 통합된 JavaScript 로직 시작
+    // ----------------------------------------------------
+
+    // --- 0. 전역 상태 변수 및 유틸리티 함수 ---
+    const LOCAL_STORAGE_KEY = 'zero_waste_quiz_results';
+    const uuid = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID.bind(crypto)
+        : () => Math.random().toString(36).substring(2, 9);
+
+    const pledges = {
+        elementary: "나는 잔반 없는 접시를 만드는 꼬마 지구 지킴이!",
+        adolescent: "나는 오늘부터 물건을 재사용하여 쓰레기를 줄이는 멋진 행동가!",
+        adult: "필요하지 않은 것은 NO! 지갑을 열기 전에 한 번 더 생각합니다."
+    };
+
+    // 퀴즈 데이터 전역 변수 (JSON 로딩 대상)
+    let quizData = null;
+
+    // 퀴즈 결과 로직 관련 함수 (기존과 동일)
+
+    // 퀴즈 결과를 로컬 스토리지에 저장
+    function saveResultLocally(result) {
+        let results = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        results.push(result);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(results));
+    }
+
+    // 퀴즈 결과를 Firestore에 저장 (V9 모듈 사용)
+    async function saveResult(result) {
+        try {
+            const docRef = await addDoc(collection(db, RESULTS_COLLECTION), result);
+            console.log("Firestore에 저장 완료. 문서 ID: ", docRef.id);
+        } catch (error) {
+            console.error("Firestore 저장 오류:", error);
+            alert("퀴즈 결과 저장에 실패했습니다. (서버 오류)");
+            saveResultLocally(result); // 서버 저장 실패 시 로컬에 저장
+        }
+    }
+
+    // ----------------------------------------------------
+    // 1. JSON 로딩 함수 (비동기)
+    // ----------------------------------------------------
+
+    /**
+     * oxquizData.json 파일을 비동기적으로 불러와 quizData 변수에 저장합니다.
+     */
+    async function loadQuizData() {
+        try {
+            const response = await fetch('./oxquizData.json');
+            if (!response.ok) {
+                throw new Error(`HTTP 오류: ${response.status}`);
+            }
+            quizData = await response.json(); // 로드 성공 시 전역 변수에 할당
+            console.log("퀴즈 데이터 로드 완료.");
+            return true;
+        } catch (error) {
+            console.error("퀴즈 데이터 로딩 실패:", error);
+            alert(`[오류] 퀴즈 데이터를 불러오지 못했습니다. oxquizData.json 파일의 경로 및 JSON 형식을 확인해 주세요.\n상세: ${error.message}`);
+            return false;
+        }
+    }
+
+    // ----------------------------------------------------
+    // 2. 상태 변수 및 DOM 요소 선언 (대부분 DOMContentLoaded 내부에 재배치)
+    // ----------------------------------------------------
+    
+    // 이 변수들은 startGame, checkAnswer 등 다른 함수에서 참조됩니다.
+    let currentAgeGroup = '';
+    let currentQuizSet = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedSetIndex = 0;
+    let localParticipantId_internal = 'guest-' + uuid();
+    let answerLog = [];
+    let correctLog = [];
+    let screens = {}; // DOM 요소 컨테이너
+
+    // DOM 요소 변수 (DOMContentLoaded 내에서 할당될 예정)
+    let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle; 
+    let cardInner, questionNumberText, questionText, explanationText, answerBtnsContainer;
+    let scoreText, resultEmoji, pledgeText, answerStatusText, correctAnswerText;
+    let cardFront, cardEmojiFront, answerEmoji, localIdDisplay;
+
+
+    // ----------------------------------------------------
+    // 3. 퀴즈 핵심 함수 (기존과 동일)
+    // ----------------------------------------------------
+
+    // 화면 전환 함수
+    function showScreen(name) {
+        Object.keys(screens).forEach(key => {
+            screens[key].classList.add('hidden');
+        });
+        if (screens[name]) {
+            screens[name].classList.remove('hidden');
+        }
+    }
+
+    // 퀴즈 시작 함수
+    function startGame(event) {
+        if (!quizData) {
+            console.error("퀴즈 데이터가 로드되지 않았습니다.");
+            alert("데이터 로딩 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+            return;
+        }
+
+        currentAgeGroup = event.currentTarget.dataset.age;
+        
+        const ageQuizSets = quizData[currentAgeGroup];
+        if (!ageQuizSets || ageQuizSets.length === 0) {
+            console.error("선택된 연령대의 퀴즈 데이터 세트가 없습니다:", currentAgeGroup);
+            alert("선택된 연령대에 해당하는 퀴즈 데이터가 없습니다.");
+            return;
+        }
+
+        selectedSetIndex = Math.floor(Math.random() * ageQuizSets.length);
+        currentQuizSet = ageQuizSets[selectedSetIndex];
+        currentQuestionIndex = 0;
+        score = 0;
+        answerLog = [];
+        correctLog = [];
+        
+        localParticipantId_internal = 'guest-' + uuid();
+        
+        quizTitle.textContent = currentAgeGroup === 'elementary' ? '꼬마 영웅 퀴즈' : 
+                                 currentAgeGroup === 'adolescent' ? '그린 리더 퀴즈' : '제로 챔피언 퀴즈';
+
+        loadQuestion();
+        showScreen('quiz');
+    }
+
+    // 문제 로드 함수
+    function loadQuestion() {
+        const question = currentQuizSet[currentQuestionIndex];
+        
+        // 카드 상태 초기화
+        cardInner.classList.remove('is-flipped');
+        cardFront.classList.remove('card-correct', 'card-incorrect');
+        answerBtnsContainer.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+
+        // 내용 업데이트
+        questionNumberText.textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
+        cardEmojiFront.textContent = question.emoji;
+        questionText.textContent = question.q;
+        explanationText.textContent = question.exp;
+        
+        oBtn.disabled = false;
+        xBtn.disabled = false;
+    }
+
+    // 정답 확인 함수
+    function checkAnswer(userAnswer) {
+        const question = currentQuizSet[currentQuestionIndex];
+        const isCorrect = (userAnswer === question.a);
+        
+        // 상태 업데이트
+        if (isCorrect) {
+            score++;
+            answerStatusText.textContent = "정답입니다! 🎉";
+            answerEmoji.textContent = "✅";
+            cardFront.classList.add('card-correct');
+        } else {
+            answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
+            answerEmoji.textContent = "❌";
+            cardFront.classList.add('card-incorrect');
+        }
+
+        // 로그 기록
+        answerLog.push({ qIndex: currentQuestionIndex, q: question.q, u: userAnswer, a: question.a });
+        correctLog.push(isCorrect);
+        
+        // 카드 뒤집기
+        correctAnswerText.textContent = `정답: ${question.a}`;
+        cardInner.classList.add('is-flipped');
+        
+        // 버튼 상태 변경
+        oBtn.disabled = true;
+        xBtn.disabled = true;
+        answerBtnsContainer.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
+    }
+
+    // 다음 문제/결과 화면 함수
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < currentQuizSet.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    // 결과 화면 표시 및 저장 함수
+    function showResults() {
+        showScreen('results');
+        const totalQuestions = currentQuizSet.length;
+        
+        // 점수 및 다짐 문구 설정
+        scoreText.textContent = `${totalQuestions} 문제 중 ${score} 개 정답!`;
+        pledgeText.textContent = pledges[currentAgeGroup];
+        localIdDisplay.textContent = `참가 ID: ${localParticipantId_internal}`;
+        
+        // 이모지 설정
+        if (score === totalQuestions) {
+            resultEmoji.textContent = '👑';
+        } else if (score >= totalQuestions * 0.7) {
+            resultEmoji.textContent = '🌟';
+        } else {
+            resultEmoji.textContent = '💡';
+        }
+        
+        const resultData = {
+            id: localParticipantId_internal,
+            ageGroup: currentAgeGroup,
+            score: score,
+            totalQuestions: totalQuestions,
+            quizSetIndex: selectedSetIndex,
+            timestamp: new Date().toISOString(),
+            answerLog: answerLog,
+            correctLog: correctLog
+        };
+        saveResultLocally(resultData); // 로컬 저장소
+        
+        // Firestore 저장 함수 호출
+        saveResult(resultData);
+
+        showScreen('results');
+    }
+
+    // ----------------------------------------------------
+    // 4. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합
+    // ----------------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- DOM 요소 변수 할당 ---
+        // ⭐ 이 부분이 이전 코드에서 DOMContentLoaded 밖에서 정의되어 오류를 유발했습니다.
+        const ageSelectButtons = document.querySelectorAll('.age-select-btn');
+        oBtn = document.getElementById('o-btn');
+        xBtn = document.getElementById('x-btn');
+        nextBtn = document.getElementById('next-btn');
+        restartBtn = document.getElementById('restart-btn');
+        backToStartBtn = document.getElementById('back-to-start-btn');
+        quizTitle = document.getElementById('quiz-title');
+
+        screens = {
+            ageSelection: document.getElementById('age-selection-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            results: document.getElementById('results-screen')
+        };
+
+        cardInner = document.getElementById('card-inner');
+        questionNumberText = document.getElementById('question-number-text');
+        questionText = document.getElementById('question-text');
+        explanationText = document.getElementById('explanation-text');
+        answerBtnsContainer = document.getElementById('answer-btns');
+        scoreText = document.getElementById('score-text');
+        resultEmoji = document.getElementById('result-emoji');
+        pledgeText = document.getElementById('pledge-text');
+        answerStatusText = document.getElementById('answer-status-text');
+        correctAnswerText = document.getElementById('correct-answer-text');
+        
+        // null 체크를 통해 요소가 존재하는지 확인 후 접근
+        if (cardInner) {
+            cardFront = cardInner.querySelector('.card-front');
+        } else {
+            console.error("DOM: 'card-inner' 요소를 찾을 수 없습니다.");
+            return; // 퀴즈 실행 중단
+        }
+        
+        cardEmojiFront = document.getElementById('card-emoji-front');
+        answerEmoji = document.getElementById('answer-emoji');
+        localIdDisplay = document.getElementById('local-id-display');
+
+        // --- 퀴즈 데이터 로딩 (비동기) ---
+        // 데이터 로딩이 실패하면 퀴즈 실행을 막습니다.
+        const dataLoaded = await loadQuizData(); 
+        if (!dataLoaded) {
+            // alert는 loadQuizData에서 이미 처리했습니다.
+            return;
+        }
+
+        // --- 이벤트 리스너 연결 ---
+        ageSelectButtons.forEach(button => {
+            button.addEventListener('click', startGame);
+        });
+
+        oBtn.addEventListener('click', () => checkAnswer('O'));
+        xBtn.addEventListener('click', () => checkAnswer('X'));
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', () => {
+            showScreen('ageSelection');
+        });
+        backToStartBtn.addEventListener('click', () => {
+            showScreen('ageSelection');
+        });
+
+        // 초기 화면 설정 (데이터 로딩이 완료된 후)
+        showScreen('ageSelection');
+    });
+
+    // ----------------------------------------------------
+    // 💡 통합된 JavaScript 로직 끝
+    // ----------------------------------------------------
+</script>
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Nanum Gothic', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* 플래시카드 뒤집기 애니메이션 컨테이너 */
+.perspective {
+perspective: 1000px;
+}
+.card-inner {
+position: relative;
+width: 100%;
+height: 100%;
+transition: transform 0.6s;
+transform-style: preserve-3d;
+}
+.is-flipped {
+transform: rotateY(180deg);
+}
+.card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem; 
+             border: 4px solid transparent; 
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background-image: linear-gradient(to top right, #e0f2fe, #f0f9ff);
+        }
+.answer-btn {
+transition: background-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.answer-btn:active {
+transform: scale(0.98);
+box-shadow: none;
+}
+.card-correct {
+border-color: #22c55e !important;
+}
+.card-incorrect {
+border-color: #ef4444 !important;
+}
+    </style>
+</head>
+<body class="bg-emerald-50 text-gray-800">
+    <div class="min-h-screen w-full flex items-center justify-center p-4">
+
+        <div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+                <div class="text-6xl md:text-7xl mb-4">🌍</div>
+                <h1 class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">환경 영웅 OX 퀴즈</h1>
+                <p class="text-gray-600 mb-8 text-lg">퀴즈에 참여할 그룹을 선택해주세요!</p>
+                <div class="grid grid-cols-1 gap-4">
+                    <button data-age="elementary" class="age-select-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        👨‍👩‍👧‍👦 초등학생 (꼬마 영웅)
+                    </button>
+                    <button data-age="adolescent" class="age-select-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        🧑‍🎓 청소년 (그린 리더)
+                    </button>
+                    <button data-age="adult" class="age-select-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        👩‍💼 성인 (제로 챔피언)
+                    </button>
+                </div>
+                <p class="text-xs text-gray-400 mt-6" style="display: none;">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다.</p>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="w-full max-w-lg md:max-w-xl hidden">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <div>
+                    <h2 id="quiz-title" class="text-xl md:text-2xl font-bold text-emerald-700">퀴즈 제목</h2>
+                    <p id="question-number-text" class="text-gray-500 font-semibold">문제 1 / 10</p>
+                </div>
+                <button id="back-to-start-btn" class="text-sm text-gray-500 hover:text-gray-700 font-semibold py-2 px-3 rounded-lg bg-white/70 hover:bg-white transition-all shadow-md">
+                    처음으로
+                </button>
+            </div>
+
+            <div class="perspective h-[450px] md:h-[500px]">
+                <div id="card-inner" class="card-inner h-full">
+                    <div class="card-front bg-white p-6 md:p-8">
+                        <div id="card-emoji-front" class="text-7xl md:text-8xl text-center pt-8 pb-4">
+                        </div>
+                        <p id="question-text" class="text-xl md:text-2xl font-bold text-center flex-grow flex items-center justify-center leading-relaxed">
+                            문제 텍스트
+                        </p>
+                        <p class="text-center text-gray-400 text-sm font-medium">O / X 버튼을 눌러주세요</p>
+                    </div>
+
+                    <div id="card-back" class="card-back p-6 md:p-8">
+                        <div class="text-center">
+                            <div id="answer-emoji" class="text-7xl md:text-8xl mb-4">
+                            </div>
+                            <h3 id="answer-status-text" class="text-3xl md:text-4xl font-extrabold mb-2">정답입니다!</h3>
+                            <h4 id="correct-answer-text" class="text-xl md:text-2xl font-bold text-gray-700 mb-4">정답: O</h4>
+                        </div>
+                        <p id="explanation-text" class="text-base md:text-2xl font-bold text-gray-700 text-center leading-relaxed flex-grow flex items-center justify-center">
+                            해설 텍스트
+                        </p>
+                        <div class="text-center text-gray-500 text-sm font-medium pt-4">
+                            '다음 문제' 버튼을 눌러주세요
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="controls-container" class="mt-6">
+                <div id="answer-btns" class="grid grid-cols-2 gap-4">
+                    <button id="o-btn" class="answer-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-6 rounded-xl text-4xl shadow-lg transition-transform transform hover:scale-105">O</button>
+                    <button id="x-btn" class="answer-btn bg-red-500 hover:bg-red-600 text-white font-bold py-6 rounded-xl text-4xl shadow-lg transition-transform transform hover:scale-105">X</button>
+                </div>
+                <button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                    다음 문제
+                </button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="w-full max-w-lg md:max-w-xl text-center hidden">
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+                <div id="result-emoji" class="text-6xl md:text-7xl mb-4">🎉</div>
+                <h1 class="text-2xl md:text-3xl font-bold text-emerald-700 mb-2">퀴즈 완료!</h1>
+                <p id="score-text" class="text-gray-800 mb-6 text-2xl font-semibold">10 문제 중 8 개 정답!</p>
+                <div class="bg-emerald-50 p-4 rounded-lg mb-8 border border-emerald-200">
+                    <h3 class="font-bold text-emerald-800 mb-2 text-lg">📝 나의 제로웨이스트 다짐</h3>
+                    <p id="pledge-text" class="text-gray-700 font-medium text-base leading-relaxed">
+                        다짐 문구
+                    </p>
+                </div>
+                <p id="local-id-display" class="text-xs text-gray-400 mt-4 mb-4 break-words">
+                </p>
+
+                <div class="space-y-4">
+                    <button id="restart-btn" class="w-full bg-yellow-500 hover:bg-yellow-550 text-gray font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        처음으로 돌아가기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
