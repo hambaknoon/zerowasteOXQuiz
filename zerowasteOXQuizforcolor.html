@@ -185,15 +185,33 @@
         const question = currentQuizSet[currentQuestionIndex];
         const isCorrect = (userAnswer === question.a);
         
+        // 버튼 상태 변경
+        oBtn.disabled = true;
+        xBtn.disabled = true;
+        answerBtnsContainer.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
+
+	// 카드 뒤집기
+        correctAnswerText.textContent = `정답: ${question.a}`;
+
         // 상태 업데이트
         if (isCorrect) {
             score++;
-            answerStatusText.textContent = "정답입니다! 🎉";
             answerEmoji.textContent = "✅";
+	    answerStatusText.textContent = "정답입니다! 🎉";
+
+            answerStatusText.classList.remove('text-red-600');
+            answerStatusText.classList.add('text-green-600’);
+        
+	    cardBack.classList.add('card-correct');
             cardFront.classList.add('card-correct');
+
         } else {
             answerStatusText.textContent = "아쉽지만 오답입니다. 😭";
             answerEmoji.textContent = "❌";
+            answerStatusText.classList.remove('text-green-600');
+            answerStatusText.classList.add('text-red-600');
+            cardBack.classList.add('card-incorrect');
             cardFront.classList.add('card-incorrect');
         }
 
@@ -201,15 +219,8 @@
         answerLog.push({ qIndex: currentQuestionIndex, q: question.q, u: userAnswer, a: question.a });
         correctLog.push(isCorrect);
         
-        // 카드 뒤집기
-        correctAnswerText.textContent = `정답: ${question.a}`;
         cardInner.classList.add('is-flipped');
-        
-        // 버튼 상태 변경
-        oBtn.disabled = true;
-        xBtn.disabled = true;
-        answerBtnsContainer.classList.add('hidden');
-        nextBtn.classList.remove('hidden');
+
     }
 
     // 다음 문제/결과 화면 함수
