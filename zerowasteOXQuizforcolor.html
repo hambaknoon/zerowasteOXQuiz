@@ -164,8 +164,6 @@
     function loadQuestion() {
         const question = currentQuizSet[currentQuestionIndex];
 
-		alert("loadQuestion");
-		
         // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
         cardFront.classList.remove('card-correct', 'card-incorrect');
@@ -190,8 +188,6 @@
         const question = currentQuizSet[currentQuestionIndex];
         const isCorrect = (userAnswer === question.a);
         
-		alert("checkAnswer");
-		
         // 버튼 상태 변경
         oBtn.disabled = true;
         xBtn.disabled = true;
