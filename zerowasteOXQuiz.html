@@ -557,18 +557,28 @@ border-color: #ef4444 !important;
     <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 relative">
         
         
-        <div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
-        <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl relative"> 
-            
-            <div class="absolute top-4 right-4 md:top-10 md:right-10 flex space-x-2 z-10">
-                <img id="lang-ko" src="https://flagcdn.com/w20/kr.png" srcset="https://flagcdn.com/w40/kr.png 2x" alt="한국어" data-lang="ko" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-100">
-                <img id="lang-en" src="https://flagcdn.com/w20/us.png" srcset="https://flagcdn.com/w40/us.png 2x" alt="English" data-lang="en" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-50 hover:opacity-75">
-            </div>
-            <div class="text-6xl md:text-7xl mb-4">🌍</div>
-            <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">환경 영웅 OX 퀴즈</h1>
-            <p id="main-subtitle" class="text-gray-600 mb-8 text-lg">퀴즈에 참여할 그룹을 선택해주세요!</p>
-            </div>
+         <div class="absolute top-4 right-4 flex space-x-2 z-10">
+            <img id="lang-ko" src="https://flagcdn.com/w20/kr.png" srcset="https://flagcdn.com/w40/kr.png 2x" alt="한국어" data-lang="ko" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-100">
+            <img id="lang-en" src="https://flagcdn.com/w20/us.png" srcset="https://flagcdn.com/w40/us.png 2x" alt="English" data-lang="en" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-50 hover:opacity-75">
         </div>
+        <div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+                <div class="text-6xl md:text-7xl mb-4">🌍</div>
+                <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">환경 영웅 OX 퀴즈</h1>
+                <p id="main-subtitle" class="text-gray-600 mb-8 text-lg">퀴즈에 참여할 그룹을 선택해주세요!</p>
+                <div class="grid grid-cols-1 gap-4">
+                    <button data-age="elementary" class="age-select-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        👨‍👩‍👧‍👦 초등학생 (꼬마 영웅)
+                    </button>
+                    <button data-age="adolescent" class="age-select-btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        🧑‍🎓 청소년 (그린 리더)
+                    </button>
+                    <button data-age="adult" class="age-select-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-5 px-6 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                        👩‍💼 성인 (제로웨이스트 챔피언)
+                    </button>
+                </div>
+                <p class="text-xs text-gray-400 mt-6" style="display: none;">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
+            </div>
         </div>
 
         <div id="quiz-screen" class="w-full max-w-lg md:max-w-xl hidden">
