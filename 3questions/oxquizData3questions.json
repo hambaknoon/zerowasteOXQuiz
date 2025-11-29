@@ -1,6 +1,6 @@
 {
-  "OXQuixfor3": [
-    [ // 🌟 퀴즈 세트 1 (3문제)
+  "OXQuizfor3": [
+    [
       {
         "emoji": "🥤",
         "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
@@ -26,7 +26,7 @@
         "exp_en": "A large amount of food waste is incinerated or landfilled, polluting the environment."
       }
     ],
-    [ // 🌟 퀴즈 세트 2 (3문제)
+    [
       {
         "emoji": "🪱",
         "q": "쓰레기를 버리면 땅속에서 바로 사라져요.",
