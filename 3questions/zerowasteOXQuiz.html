@@ -26,8 +26,8 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const RESULTS_COLLECTION = 'quiz_results_adult'; // ⭐ 성인용 퀴즈 결과 컬렉션 분리
-
+    const RESULTS_COLLECTION = 'quiz_results_adult'; 
+    
     // ----------------------------------------------------
     // 💡 통합된 JavaScript 로직 시작
     // ----------------------------------------------------
@@ -35,7 +35,7 @@
     // --- 0. 전역 상태 변수 및 유틸리티 함수 ---
     const LOCAL_STORAGE_KEY = 'zero_waste_quiz_results_adult';
     const LANG_STORAGE_KEY = 'zero_waste_quiz_lang_adult'; 
-    const QUIZ_DATA_KEY = 'OXQuizfor3'; // ⭐ JSON 데이터의 키 값을 반영
+    const QUIZ_DATA_KEY = 'OXQuizfor3'; // JSON 데이터의 키 값을 반영
 
     // ⭐ 0-1. 다국어 텍스트 데이터
     const translations = {
@@ -107,13 +107,9 @@
         ? crypto.randomUUID.bind(crypto)
         : () => Math.random().toString(36).substring(2, 9);
 
-    // ⭐ 0-2. 언어 상태 변수 (기본값: 한국어, 로컬 스토리지에서 로드 시 덮어쓰기)
     let currentLang = localStorage.getItem(LANG_STORAGE_KEY) || 'ko';
-
-    // 퀴즈 데이터 전역 변수 (JSON 로딩 대상)
     let quizData = null;
 
-    // 퀴즈 결과 로직 관련 함수 (기존과 동일)
     function saveResultLocally(result) {
         let results = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
         results.push(result);
@@ -131,7 +127,6 @@
         }
     }
 
-    // ⭐ 1-1. 통계 데이터 로드 함수 (새로 추가)
     async function loadStats() {
         const statsDisplay = document.getElementById('quiz-stats-display');
         statsDisplay.innerHTML = `<p class="text-sm text-gray-500">${translations[currentLang].results.statsTitle} (로딩 중...)</p>`;
@@ -169,15 +164,13 @@
         }
     }
 
-
     // ----------------------------------------------------
     // 2. JSON 로딩 함수 (비동기)
     // ----------------------------------------------------
 
     async function loadQuizData() {
         try {
-            // ⭐ 퀴즈 데이터 파일 이름을 언어와 관련 없이 단일 파일로 가정 (oxquizData3questions.json)
-            const response = await fetch('./oxquizData3questions.json'); 
+            const response = await fetch('./oxquizData.json'); 
             if (!response.ok) {
                 throw new Error(`HTTP 오류: ${response.status}`);
             }
@@ -186,7 +179,7 @@
             return true;
         } catch (error) {
             console.error("퀴즈 데이터 로딩 실패:", error);
-            alert(`[오류] 퀴즈 데이터를 불러오지 못했습니다. ${response} 파일의 경로 및 JSON 형식을 확인해 주세요.\n상세: ${error.message}`);
+            alert(`[오류] 퀴즈 데이터를 불러오지 못했습니다. oxquizData.json 파일의 경로 및 JSON 형식을 확인해 주세요.\n상세: ${error.message}`);
             return false;
         }
     }
@@ -195,7 +188,7 @@
     // 3. 상태 변수 및 DOM 요소 선언
     // ----------------------------------------------------
     
-    let currentAgeGroup = 'adult'; // ⭐ 성인 그룹으로 고정
+    let currentAgeGroup = 'adult'; 
     let currentQuizSet = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -203,29 +196,28 @@
     let localParticipantId_internal = 'guest-' + uuid();
     let answerLog = [];
     let correctLog = [];
-    let screens = {}; // DOM 요소 컨테이너
+    let screens = {}; 
 
     // DOM 요소 변수
     let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle; 
     let cardInner, questionNumberText, questionText, explanationText, answerBtnsContainer;
     let scoreText, resultEmoji, pledgeText, answerStatusText, correctAnswerText;
     let cardFront, cardEmojiFront, answerEmoji, localIdDisplay, cardBack;
-    
-    // ⭐ 언어 관련 DOM 요소 추가
     let mainTitle, mainSubtitle, quizQuestionText, quizPressOXText, resultsCompleteText, resultsPledgeTitle, resultsParticipantId, resultsRestartBtn, quizBackToStartBtn, quizNextBtn;
 
     // ----------------------------------------------------
     // 4. 언어 및 퀴즈 핵심 함수
     // ----------------------------------------------------
 
+    /**
+     * ⭐ 언어 선택 버튼의 강조 효과를 포함하여 UI 업데이트
+     */
     function updateUI() {
         const langData = translations[currentLang];
 
-        // 메인 페이지 텍스트 업데이트
         mainTitle.textContent = langData.title;
         mainSubtitle.textContent = langData.subtitle;
         
-        // 퀴즈/결과 페이지 버튼 및 기타 텍스트 업데이트
         if (quizBackToStartBtn) {
             quizBackToStartBtn.textContent = langData.quiz.backToStart;
             quizNextBtn.textContent = langData.quiz.nextQuestion;
@@ -234,46 +226,41 @@
             resultsRestartBtn.textContent = langData.results.restart;
         }
 
-        // HTML lang 속성 업데이트
         document.documentElement.lang = currentLang;
 
-        // 국기 이미지 전환
+        // ⭐ 국기 이미지 전환 및 강조 효과 적용 로직 수정
         const langKo = document.getElementById('lang-ko');
         const langEn = document.getElementById('lang-en');
+        const activeRingClass = 'ring-emerald-500/50';
+        const inactiveRingClass = 'ring-transparent';
+
         if (currentLang === 'ko') {
-            langKo.classList.add('opacity-100');
-            langKo.classList.remove('opacity-50', 'hover:opacity-75');
-            langEn.classList.add('opacity-50', 'hover:opacity-75');
-            langEn.classList.remove('opacity-100');
+            langKo.classList.add('opacity-100', activeRingClass);
+            langKo.classList.remove('opacity-50', 'hover:opacity-75', inactiveRingClass);
+            langEn.classList.add('opacity-50', 'hover:opacity-75', inactiveRingClass);
+            langEn.classList.remove('opacity-100', activeRingClass);
         } else {
-            langEn.classList.add('opacity-100');
-            langEn.classList.remove('opacity-50', 'hover:opacity-75');
-            langKo.classList.add('opacity-50', 'hover:opacity-75');
-            langKo.classList.remove('opacity-100');
+            langEn.classList.add('opacity-100', activeRingClass);
+            langEn.classList.remove('opacity-50', 'hover:opacity-75', inactiveRingClass);
+            langKo.classList.add('opacity-50', 'hover:opacity-75', inactiveRingClass);
+            langKo.classList.remove('opacity-100', activeRingClass);
         }
     }
 
-    /**
-     * 언어 전환 및 즉시 퀴즈 시작 함수
-     * @param {string} langCode 'ko' 또는 'en'
-     */
     function setLanguage(langCode) {
         if (langCode in translations) {
             currentLang = langCode;
-            localStorage.setItem(LANG_STORAGE_KEY, langCode); // 로컬 스토리지에 저장
+            localStorage.setItem(LANG_STORAGE_KEY, langCode); 
             updateUI();
 
-            // ⭐ 언어 선택 후 바로 퀴즈 시작
             if (quizData) {
                 startAdultQuiz();
             } else {
-                 // 데이터가 아직 로드되지 않은 경우, 로드 완료 후 시작될 것임.
                  console.log("데이터 로드 대기 중...");
             }
         }
     }
 
-    // 화면 전환 함수
     function showScreen(name) {
         Object.keys(screens).forEach(key => {
             screens[key].classList.add('hidden');
@@ -283,21 +270,19 @@
         }
     }
 
-    // ⭐ 성인 퀴즈 시작 함수 (startGame 대체)
     function startAdultQuiz() {
         if (!quizData) {
             console.error("퀴즈 데이터가 로드되지 않았습니다.");
             return;
         }
 
-        const ageQuizSets = quizData[QUIZ_DATA_KEY]; // ⭐ 수정된 키 값 사용
+        const ageQuizSets = quizData[QUIZ_DATA_KEY]; 
         if (!ageQuizSets || ageQuizSets.length === 0) {
             console.error("퀴즈 데이터 세트가 없습니다:", QUIZ_DATA_KEY);
             alert("퀴즈 데이터가 없습니다. JSON 파일을 확인해 주세요.");
             return;
         }
 
-        // 임의의 한 문제 세트 선택
         selectedSetIndex = Math.floor(Math.random() * ageQuizSets.length);
         currentQuizSet = ageQuizSets[selectedSetIndex];
         currentQuestionIndex = 0;
@@ -307,26 +292,22 @@
         
         localParticipantId_internal = 'guest-' + uuid();
         
-        // 언어에 따른 퀴즈 제목 설정
         quizTitle.textContent = translations[currentLang].quizTitles.adult || 'Quiz';
 
         loadQuestion();
         showScreen('quiz');
     }
 
-    // 문제 로드 함수 (기존과 동일)
     function loadQuestion() {
         const question = currentQuizSet[currentQuestionIndex];
         const langData = translations[currentLang];
         
-        // 카드 상태 초기화
         cardInner.classList.remove('is-flipped');
         cardFront.classList.remove('card-correct', 'card-incorrect');
         answerBtnsContainer.classList.remove('hidden');
         cardBack.classList.remove('card-correct', 'card-incorrect');
         nextBtn.classList.add('hidden');
         
-        // 내용 업데이트
         questionNumberText.textContent = `${langData.quiz.question} ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
         cardEmojiFront.textContent = question.emoji;
         questionText.textContent = question[currentLang === 'ko' ? 'q' : 'q_en'] || question.q;
@@ -339,13 +320,11 @@
         xBtn.disabled = false;
     }
 
-    // 정답 확인 함수 (기존과 동일)
     function checkAnswer(userAnswer) {
         const question = currentQuizSet[currentQuestionIndex];
         const langData = translations[currentLang];
         const isCorrect = (userAnswer === question.a);
         
-        // 상태 업데이트
         if (isCorrect) {
             score++;
             answerEmoji.textContent = "✅";
@@ -358,22 +337,18 @@
             cardBack.classList.add('card-incorrect');
         }
 
-        // 로그 기록
         answerLog.push({ qIndex: currentQuestionIndex, q: question.q, u: userAnswer, a: question.a, lang: currentLang });
         correctLog.push(isCorrect);
 
-        // 카드 뒤집기
         correctAnswerText.textContent = `${langData.answer.correctAnswer} ${question.a}`;
         cardInner.classList.add('is-flipped');
 
-        // 버튼 상태 변경
         oBtn.disabled = true;
         xBtn.disabled = true;
         answerBtnsContainer.classList.add('hidden');
         nextBtn.classList.remove('hidden');		
     }
 
-    // 다음 문제/결과 화면 함수 (기존과 동일)
     function nextQuestion() {
         currentQuestionIndex++;
         if (currentQuestionIndex < currentQuizSet.length) {
@@ -383,18 +358,15 @@
         }
     }
     
-    // ⭐ 결과 화면 표시 및 저장 함수 (통계 로직 추가)
     function showResults() {
         showScreen('results');
         const langData = translations[currentLang];
         const totalQuestions = currentQuizSet.length;
         
-        // 점수 및 다짐 문구 설정
         scoreText.textContent = `${totalQuestions} ${currentLang === 'ko' ? '문제 중' : 'out of'} ${score} ${currentLang === 'ko' ? '개 정답!' : 'correct!'}`;
-        pledgeText.textContent = langData.pledges.adult; // ⭐ 'adult' 다짐 문구 고정
+        pledgeText.textContent = langData.pledges.adult; 
         localIdDisplay.textContent = `${langData.results.participantId} ${localParticipantId_internal}`;
         
-        // 이모지 설정
         if (score === totalQuestions) {
             resultEmoji.textContent = '👑';
         } else if (score >= totalQuestions * 0.7) {
@@ -405,7 +377,7 @@
         
         const resultData = {
             id: localParticipantId_internal,
-            ageGroup: 'adult', // ⭐ 'adult' 고정
+            ageGroup: 'adult', 
             score: score,
             totalQuestions: totalQuestions,
             quizSetIndex: selectedSetIndex,
@@ -417,7 +389,6 @@
         saveResultLocally(resultData);
         saveResult(resultData);
 
-        // ⭐ 통계 데이터 로드 및 표시
         loadStats();
         
         showScreen('results');
@@ -429,7 +400,6 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
         // --- DOM 요소 변수 할당 ---
-        // ageSelectButtons는 더 이상 사용하지 않지만, 할당 코드에서 제거
         oBtn = document.getElementById('o-btn');
         xBtn = document.getElementById('x-btn');
         nextBtn = document.getElementById('next-btn');
@@ -476,7 +446,7 @@
         answerEmoji = document.getElementById('answer-emoji');
         localIdDisplay = document.getElementById('local-id-display');
 
-        // ⭐ 언어 선택 버튼 이벤트 리스너 연결 (클릭 시 setLanguage 호출)
+        // 언어 선택 버튼 이벤트 리스너 연결
         document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
         document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
         
@@ -487,15 +457,12 @@
         }
 
         // --- 이벤트 리스너 연결 ---
-        // ⭐ ageSelectButtons.forEach(button => { button.addEventListener('click', startGame); }); // 삭제
-
         oBtn.addEventListener('click', () => checkAnswer('O'));
         xBtn.addEventListener('click', () => checkAnswer('X'));
         nextBtn.addEventListener('click', nextQuestion);
         
-        // 재시작 버튼 클릭 시, 퀴즈를 다시 시작하도록 로직 변경
         restartBtn.addEventListener('click', () => startAdultQuiz()); 
-        backToStartBtn.addEventListener('click', () => startAdultQuiz()); // 처음으로 돌아가는 버튼도 퀴즈 재시작으로 연결
+        backToStartBtn.addEventListener('click', () => startAdultQuiz());
 
         // 초기 화면 설정 전에 UI 업데이트를 통해 언어 적용
         updateUI();
@@ -564,14 +531,20 @@ border-color: #ef4444 !important;
         <div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl relative"> 
                 
-                <div class="absolute top-4 right-4 md:top-10 md:right-10 flex space-x-2 z-10">
-                    <img id="lang-ko" src="./img/korean.jpg" alt="한국어" data-lang="ko" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-100">
-                    <img id="lang-en" src="./img/english.jpg" alt="English" data-lang="en" class="w-8 h-8 rounded-full shadow-lg cursor-pointer transition-opacity opacity-50 hover:opacity-75">
-                </div>
+                <div class="text-6xl md:text-7xl mb-4">👩‍💼</div> 
+                <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">제로웨이스트 챔피언 OX 퀴즈</h1> 
+                <p id="main-subtitle" class="text-gray-600 mb-8 text-lg">언어를 선택하고 퀴즈를 시작하세요!</p> 
                 
-                <div class="text-6xl md:text-7xl mb-4">👩‍💼</div> <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">제로웨이스트 챔피언 OX 퀴즈</h1> <p id="main-subtitle" class="text-gray-600 mb-8 text-lg">언어를 선택하고 퀴즈를 시작하세요!</p> <p class="text-xs text-gray-400 mt-6 hidden">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
+                <div class="flex justify-center space-x-6 mb-8">
+                    <img id="lang-ko" src="./img/korean.jpg" alt="한국어" data-lang="ko" 
+                         class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-xl ring-4 ring-offset-2 ring-emerald-500/50 cursor-pointer transition-transform transform hover:scale-105 opacity-100">
+                    <img id="lang-en" src="./img/english.jpg" alt="English" data-lang="en" 
+                         class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-xl ring-4 ring-offset-2 ring-transparent cursor-pointer transition-transform transform hover:scale-105 opacity-50 hover:opacity-75">
+                </div>
+                <p class="text-xs text-gray-400 mt-6 hidden">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
             </div>
         </div>
+
         <div id="quiz-screen" class="w-full max-w-lg md:max-w-xl hidden">
             <div class="flex justify-between items-center mb-4 px-2">
                 <div>
