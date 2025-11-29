@@ -222,13 +222,23 @@
         mainTitle.textContent = langData.title;
         mainSubtitle.textContent = langData.subtitle;
         
-        // ⭐ 퀴즈 시작 버튼 텍스트 업데이트 로직 추가
+        // ⭐ [퀴즈 시작 버튼]
         if (startQuizBtn) {
             startQuizBtn.textContent = langData.startQuizBtn;
         }
-        // ⭐ [추가된 부분] 퀴즈 화면의 '처음으로' 버튼 텍스트 업데이트
+        
+        // ⭐ [퀴즈 화면 버튼: '처음으로'와 '다음 문제']
         if (backToStartBtn) {
             backToStartBtn.textContent = langData.quiz.backToStart;
+        }
+        if (nextBtn) { // nextBtn (다음 문제 버튼)의 텍스트를 여기서 업데이트
+            nextBtn.textContent = langData.quiz.nextQuestion;
+        }
+        // ⭐ [결과 화면 버튼 및 텍스트]
+        if (resultsCompleteText) {
+            resultsCompleteText.textContent = langData.results.complete;
+            resultsPledgeTitle.textContent = langData.results.pledgeTitle;
+            resultsRestartBtn.textContent = langData.results.restart;
         }
         
         if (quizBackToStartBtn) {
