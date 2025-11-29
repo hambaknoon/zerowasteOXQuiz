@@ -2,84 +2,86 @@
 "elementary": [
   [
     {
-                    "emoji": "🥤",
-                    "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
-                    "q_en": "Recycling can turn all trash into resources.",
-                    "a": "X",
-                    "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
-                    "exp_en": "Not all waste can be recycled. Reducing is the best option!"
-                  },
-                  {
-                    "emoji": "🐟",
-                    "q": "바다 속 물고기들은 플라스틱을 먹지 않아요.",
-                    "q_en": "Fish in the ocean don't eat plastic.",
-                    "a": "X",
-                    "exp": "물고기들이 플라스틱을 먹이인 줄 알고 먹어요.",
-                    "exp_en": "Fish mistake plastic for food and eat it."
-                  },
-                  {
-                    "emoji": "♻️",
-                    "q": "남긴 음식물 쓰레기는 모두 퇴비로 완벽하게 재활용돼요.",
-                    "q_en": "All leftover food waste is perfectly recycled into compost.",
-                    "a": "X",
-                    "exp": "많은 양이 소각되거나 매립되어 환경을 오염시켜요.",
-                    "exp_en": "A large amount of food waste is incinerated or landfilled, polluting the environment."
-                  },
-                  {"emoji": "✏️","q": "새 학용품을 사기 전에 쓰던 것을 끝까지 사용하는 것은 쓰레기를 줄이는 일이에요.",
-                    "q_en": "Using old school supplies until the end before buying new ones helps reduce waste.",
-                    "a": "O",
-                    "exp": "**'덜 사기(Reduce)'**가 재활용하는 것 보다 더 중요해요.",
-                    "exp_en": "**'Reducing'** is more important than recycling."
-                  },
-                  {
-                    "emoji": "🥤",
-                    "q": "일회용 컵은 재활용 되니 그냥 써도 괜찮아요",
-                    "q_en": "It's okay to use disposable cups since they are recyclable.",
-                    "a": "X",
-                    "exp": "한 번 사용한 컵 쓰레기가 모이면 큰 쓰레기가 돼요.",
-                    "exp_en": "Even if used once, many disposable cups accumulate to form a huge amount of waste."
-                  },
-                  {
-                    "emoji": "🍞",
-                    "q": "유통기한이 지난 음식은 버려야 해요.",
-                    "q_en": "Expired food must be thrown away.",
-                    "a": "X",
-                    "exp": "상하지 않았으면 먹어도 괜찮아요. 음식물 낭비를 막는 용감하고 지혜로운 행동이에요!",
-                    "exp_en": "If the food is not spoiled, it's okay to eat it. This is a brave and wise action to prevent food waste."
-                  },
-                  {
-                    "emoji": "🛠️",
-                    "q": "물건을 고칠 수 있으면 새로 사지 않아도 돼요.",
-                    "q_en": "If an item can be fixed, you don't need to buy a new one.",
-                    "a": "O",
-                    "exp": "고쳐서 **'다시 쓰기(Reuse)'**는 쓰레기를 줄이는 멋진 일이에요.",
-                    "exp_en": "**'Reusing'** by fixing items is a great way to reduce waste."
-                  },
-                  {
-                    "emoji": "💰",
-                    "q": "텀블러 사용은 환경을 보호하기도 하지만 직접 돈을 아껴주는 효과는 없어요.",
-                    "q_en": "Using a tumbler protects the environment but doesn't directly save you money.",
-                    "a": "X",
-                    "exp": "대부분의 카페에서는 텀블러 할인 혜택도 있어요.",
-                    "exp_en": "Most cafes offer discounts for using a personal tumbler."
-                  },
-                  {
-                    "emoji": "👶",
-                    "q": "물티슈를 안 쓰는 것도 쓰레기를 줄이는 행동이에요.",
-                    "q_en": "Not using wet wipes is also an action that reduces waste.",
-                    "a": "O",
-                    "exp": "물티슈는 플라스틱으로 만들어졌지만 재활용이 안 되는 일반 쓰레기에요.",
-                    "exp_en": "Wet wipes are made of plastic but are general waste and cannot be recycled."
-                  },
-                  {
-                    "emoji": "👪",
-                    "q": "쓰레기를 줄이는 건 어른들이 해야 하는 일이에요",
-                    "q_en": "Reducing waste is solely the responsibility of adults.",
-                    "a": "X",
-                    "exp": "어린이도 쓰레기를 배출해요. 쓰레기를 줄이는 작은 습관이 지구를 바꿔요",
-                    "exp_en": "Children also produce waste. Small habits that reduce trash can change the planet."
-                  }
-                ],
+      "emoji": "🥤",
+      "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
+      "q_en": "Recycling can turn all trash into resources.",
+      "a": "X",
+      "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
+      "exp_en": "Not all waste can be recycled. Reducing is the best option!"
+    },
+    {
+      "emoji": "🐟",
+      "q": "바다 속 물고기들은 플라스틱을 먹지 않아요.",
+      "q_en": "Fish in the ocean don't eat plastic.",
+      "a": "X",
+      "exp": "물고기들이 플라스틱을 먹이인 줄 알고 먹어요.",
+      "exp_en": "Fish mistake plastic for food and eat it."
+    },
+    {
+      "emoji": "♻️",
+      "q": "남긴 음식물 쓰레기는 모두 퇴비로 완벽하게 재활용돼요.",
+      "q_en": "All leftover food waste is perfectly recycled into compost.",
+      "a": "X",
+      "exp": "많은 양이 소각되거나 매립되어 환경을 오염시켜요.",
+      "exp_en": "A large amount of food waste is incinerated or landfilled, polluting the environment."
+    },
+    {
+      "emoji": "✏️",
+      "q": "새 학용품을 사기 전에 쓰던 것을 끝까지 사용하는 것은 쓰레기를 줄이는 일이에요.",
+       "q_en": "Using old school supplies until the end before buying new ones helps reduce waste.",
+      "a": "O",
+      "exp": "**'덜 사기(Reduce)'**가 재활용하는 것 보다 더 중요해요.",
+      "exp_en": "**'Reducing'** is more important than recycling."
+    },
+    {
+      "emoji": "🥤",
+      "q": "일회용 컵은 재활용 되니 그냥 써도 괜찮아요",
+      "q_en": "It's okay to use disposable cups since they are recyclable.",
+      "a": "X",
+      "exp": "한 번 사용한 컵 쓰레기가 모이면 큰 쓰레기가 돼요.",
+      "exp_en": "Even if used once, many disposable cups accumulate to form a huge amount of waste."
+    },
+    {
+      "emoji": "🍞",
+      "q": "유통기한이 지난 음식은 버려야 해요.",
+      "q_en": "Expired food must be thrown away.",
+      "a": "X",
+      "exp": "상하지 않았으면 먹어도 괜찮아요. 음식물 낭비를 막는 용감하고 지혜로운 행동이에요!",
+      "exp_en": "If the food is not spoiled, it's okay to eat it. This is a brave and wise action to prevent food waste."
+    },
+    {
+      "emoji": "🛠️",
+      "q": "물건을 고칠 수 있으면 새로 사지 않아도 돼요.",
+      "q_en": "If an item can be fixed, you don't need to buy a new one.",
+      "a": "O",
+      "exp": "고쳐서 **'다시 쓰기(Reuse)'**는 쓰레기를 줄이는 멋진 일이에요.",
+      "exp_en": "**'Reusing'** by fixing items is a great way to reduce waste."
+    },
+    {
+      "emoji": "💰",
+      "q": "텀블러 사용은 환경을 보호하기도 하지만 직접 돈을 아껴주는 효과는 없어요.",
+      "q_en": "Using a tumbler protects the environment but doesn't directly save you money.",
+      "a": "X",
+      "exp": "대부분의 카페에서는 텀블러 할인 혜택도 있어요.",
+      "exp_en": "Most cafes offer discounts for using a personal tumbler."
+    },
+    {
+      "emoji": "👶",
+      "q": "물티슈를 안 쓰는 것도 쓰레기를 줄이는 행동이에요.",
+      "q_en": "Not using wet wipes is also an action that reduces waste.",
+      "a": "O",
+      "exp": "물티슈는 플라스틱으로 만들어졌지만 재활용이 안 되는 일반 쓰레기에요.",
+      "exp_en": "Wet wipes are made of plastic but are general waste and cannot be recycled."
+    },
+    {
+      "emoji": "👪",
+      "q": "쓰레기를 줄이는 건 어른들이 해야 하는 일이에요",
+      "q_en": "Reducing waste is solely the responsibility of adults.",
+      "a": "X",
+      "exp": "어린이도 쓰레기를 배출해요. 쓰레기를 줄이는 작은 습관이 지구를 바꿔요",
+      "exp_en": "Children also produce waste. Small habits that reduce trash can change the planet."
+    }
+  ],
   [
     {
       "emoji": "🪱",
@@ -87,7 +89,7 @@
       "q_en": "When trash is thrown away, it disappears immediately in the ground.",
       "a": "X",
       "exp": "쓰레기는 바로 사라지지 않고 쌓여요. \n쌓인 쓰레기도 사라지는데 오랜 시간이 걸려요.",
-      "exp_en": "Trash doesn't disappear immediately; it accumulates. \nIt takes a very long time for the accumulated trash to decompose."
+      "exp_en": "Trash doesn't disappear immediately; it accumulates. It takes a very long time for the accumulated trash to decompose."
     },
     {
       "emoji": "🚚",
