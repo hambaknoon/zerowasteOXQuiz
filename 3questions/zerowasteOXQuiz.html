@@ -176,7 +176,7 @@
 
     async function loadQuizData() {
         try {
-            // ⭐ 퀴즈 데이터 파일 이름을 언어와 관련 없이 단일 파일로 가정 (oxquizData.json)
+            // ⭐ 퀴즈 데이터 파일 이름을 언어와 관련 없이 단일 파일로 가정 (oxquizData3questions.json)
             const response = await fetch('./oxquizData3questions.json'); 
             if (!response.ok) {
                 throw new Error(`HTTP 오류: ${response.status}`);
@@ -186,7 +186,7 @@
             return true;
         } catch (error) {
             console.error("퀴즈 데이터 로딩 실패:", error);
-            alert(`[오류] 퀴즈 데이터를 불러오지 못했습니다. oxquizData.json 파일의 경로 및 JSON 형식을 확인해 주세요.\n상세: ${error.message}`);
+            alert(`[오류] 퀴즈 데이터를 불러오지 못했습니다. ${response} 파일의 경로 및 JSON 형식을 확인해 주세요.\n상세: ${error.message}`);
             return false;
         }
     }
