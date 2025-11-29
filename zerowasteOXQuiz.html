@@ -308,8 +308,17 @@
         // ⭐ 문제 번호 표시 언어 업데이트
         questionNumberText.textContent = `${langData.quiz.question} ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
         cardEmojiFront.textContent = question.emoji;
-        questionText.textContent = question[currentLang === 'ko' ? 'q' : 'q_en'] || question.q; // 퀴즈 데이터에 q_en이 없으면 q(한국어)를 사용
-        explanationText.textContent = question[currentLang === 'ko' ? 'exp' : 'exp_en'] || question.exp; // 퀴즈 데이터에 exp_en이 없으면 exp(한국어)를 사용
+        // ------------------------------------------------------------------
+        // ⭐ 핵심 수정 부분: 퀴즈 질문(Question) 텍스트 로직
+        // 현재 언어에 맞는 키(q_en 또는 q)를 사용하여 텍스트를 로드합니다.
+        questionText.textContent = question[currentLang === 'ko' ? 'q' : 'q_en'] || question.q;
+        // ------------------------------------------------------------------
+        
+        // ------------------------------------------------------------------
+        // ⭐ 핵심 수정 부분: 해설(Explanation) 텍스트 로직
+        // 현재 언어에 맞는 키(exp_en 또는 exp)를 사용하여 텍스트를 로드합니다.
+        explanationText.textContent = question[currentLang === 'ko' ? 'exp' : 'exp_en'] || question.exp;
+        // ------------------------------------------------------------------
         
         // ⭐ 텍스트 업데이트
         document.getElementById('quiz-prompt-text').textContent = langData.quiz.pressOX;
