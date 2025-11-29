@@ -3,54 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>퀴즈 통계 분석</title>
+    <title>3문제 퀴즈 누적 통계 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 추가적인 CSS 스타일링 (필요하다면) */
         .stats-card {
             transition: transform 0.2s;
         }
         .stats-card:hover {
             transform: translateY(-2px);
         }
+        /* Chart Container Styling for Aspect Ratio */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 sm:p-8">
     <div class="container mx-auto">
         <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">📊 제로 웨이스트 퀴즈 통계</h1>
-            <p class="text-lg text-gray-600">참가자 연령별 분포, 정답률 및 주요 오답 문제를 분석합니다.</p>
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">📊 3문제 퀴즈 누적 통계 분석</h1>
+            <p class="text-lg text-gray-600">컬렉션: **3quiz_results**의 누적된 참가 데이터 및 정답률을 분석합니다.</p>
         </header>
 
         <section id="statistics-section" class="bg-white p-6 rounded-lg shadow-xl mb-10">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">통계 요약</h2>
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">통계 요약 및 분포</h2>
             
             <div id="loading-message" class="text-center p-10 text-xl font-medium text-indigo-500">
                 <p>데이터를 Firebase에서 불러오는 중입니다... 잠시만 기다려주세요. ⏳</p>
             </div>
             
             <div id="stats-content" class="hidden">
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-center">
                     <div class="col-span-1 p-4 bg-gray-50 rounded-lg">
-                        <h3 class="text-xl font-medium mb-3 text-gray-700">참가자 연령별 분포 (원 그래프)</h3>
-                        <div id="pie-chart-container" class="w-full h-48 flex justify-center items-center">
-                            <canvas id="age-pie-chart" class="max-w-full max-h-full"></canvas>
+                        <h3 class="text-xl font-medium mb-3 text-gray-700">참가자 연령별 분포</h3>
+                        <div class="chart-container">
+                            <canvas id="age-pie-chart"></canvas>
                         </div>
                     </div>
-                    <div id="summary-cards" class="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <div id="summary-cards" class="col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        </div>
+                </div>
+
+                <div id="age-accuracy-display" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
                     </div>
-                </div>
+                
+                <h2 class="text-2xl font-bold mb-6 mt-10 text-gray-800">시간대별 참가자 분석</h2>
 
-                <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 정답률</h3>
-                <div id="age-group-accuracy-display" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-md">
+                        <h3 class="text-xl font-medium mb-3 text-gray-700">📅 일별 참가자 수 (최근 30일)</h3>
+                        <div class="chart-container">
+                            <canvas id="daily-bar-chart"></canvas>
+                        </div>
+                    </div>
 
-                <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 세트별 정답률</h3>
-                <div id="set-accuracy-table-container" class="overflow-x-auto border rounded-lg">
-                </div>
-
-                <h3 class="text-xl font-medium mb-4 mt-8 text-gray-700">연령별 가장 많이 틀린 문제 TOP 5 ❌</h3>
-                <div id="top-5-errors-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-md">
+                        <h3 class="text-xl font-medium mb-3 text-gray-700">🗓️ 월별 참가자 수 (누적)</h3>
+                        <div class="chart-container">
+                            <canvas id="monthly-bar-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -68,7 +84,7 @@
             </div>
 
             <div id="raw-data-table-container" class="overflow-x-auto border rounded-lg">
-            </div>
+                </div>
         </section>
         
     </div>
@@ -80,7 +96,7 @@
         // 1. Firebase 설정 및 SDK Import
         // -------------------------------------------------------------------------
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB-gGpaopmgAp0JAhhj7ghgB-0wbGeTWlE",
@@ -94,40 +110,27 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const RESULTS_COLLECTION = 'quiz_results';
-        const LOCAL_STORAGE_KEY = 'zero_waste_quiz_results'; // CSV export fallback reference
-
+        // ⭐ 3문제 퀴즈 컬렉션 사용
+        const RESULTS_COLLECTION = '3quiz_results';
+        
         // -------------------------------------------------------------------------
-        // 2. 퀴즈 데이터 (Top 5 분석을 위해 전체 데이터 포함)
-        // -------------------------------------------------------------------------
-        /**
- * oxquizData.json 파일을 비동기적으로 불러옵니다.
- */
-async function loadQuizData() {
-    try {
-        // 지정된 파일명 'oxquizData.json' 사용
-        const response = await fetch('./oxquizData.json'); 
-        if (!response.ok) {
-            throw new Error(`HTTP 오류: ${response.status}`);
-        }
-        return await response.json(); // 데이터를 반환
-    } catch (error) {
-        console.error("퀴즈 데이터 로딩 실패:", error);
-        return null; // 실패 시 null 반환
-    }
-}
-
-        // -------------------------------------------------------------------------
-        // 3. Firebase 데이터 로딩 함수 (비동기)
+        // 2. Firebase 데이터 로딩 함수 (비동기)
         // -------------------------------------------------------------------------
         async function fetchResultsFromFirestore() {
             try {
-                const querySnapshot = await getDocs(collection(db, RESULTS_COLLECTION));
+                // 시간 역순으로 데이터를 불러옵니다.
+                const q = query(collection(db, RESULTS_COLLECTION), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
                 const results = [];
+                
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    // 분석에 필요한 핵심 필드 (correctLog)가 있는 데이터만 사용
-                    if (data.correctLog && Array.isArray(data.correctLog) && data.correctLog.length > 0) {
+                    data.id = doc.id;
+                    // Firebase Timestamp 객체를 JavaScript Date 객체 또는 타임스탬프로 변환
+                    if (data.timestamp && data.timestamp instanceof Timestamp) {
+                         data.timestamp = data.timestamp.toDate();
+                    }
+                    if (data.correctLog && Array.isArray(data.correctLog)) {
                         results.push(data);
                     }
                 });
@@ -135,8 +138,8 @@ async function loadQuizData() {
             } catch (error) {
                 console.error("Firestore에서 데이터를 불러오는 중 오류 발생:", error);
                 document.getElementById('loading-message').innerHTML = `
-                    <p class='text-red-500 p-4'>Firestore 데이터를 불러오지 못했습니다. (네트워크 또는 보안 규칙 문제)</p>
-                    <p class='text-sm text-gray-500'>콘솔(F12)을 확인하여 상세 오류를 파악해주세요.</p>
+                    <p class='text-red-500 p-4'>Firestore 데이터를 불러오지 못했습니다. (보안 규칙 또는 네트워크 문제)</p>
+                    <p class='text-sm text-gray-500'>오류: ${error.message}</p>
                 `;
                 document.getElementById('stats-content').classList.add('hidden');
                 return [];
@@ -144,14 +147,13 @@ async function loadQuizData() {
         }
 
         // -------------------------------------------------------------------------
-        // 4. 통계 분석 및 표시 함수 (제공된 코드 재사용)
+        // 3. 통계 분석 및 표시 함수
         // -------------------------------------------------------------------------
-        
+
         /**
-        * 전체 퀴즈 결과를 분석하여 통계 데이터를 생성합니다. (Top 5를 위한 상세 분석 포함)
-        */
-        // analyzeResults 함수 서명 변경 (quizData 인수를 받도록)
-function analyzeResults(results, quizData) {
+         * 전체 퀴즈 결과를 분석하여 통계 데이터를 생성합니다.
+         */
+        function analyzeResults(results) {
             const stats = {
                 totalParticipants: results.length,
                 ageGroupCounts: { elementary: 0, adolescent: 0, adult: 0 },
@@ -160,74 +162,67 @@ function analyzeResults(results, quizData) {
                     adolescent: { totalScore: 0, totalQuestions: 0 }, 
                     adult: { totalScore: 0, totalQuestions: 0 } 
                 },
-                setScores: { elementary: {}, adolescent: {}, adult: {} }, 
-                questionErrors: { elementary: {}, adolescent: {}, adult: {} }, 
                 totalScore: 0,
-                totalQuestions: 0
+                totalQuestions: 0 // 3문제 퀴즈이므로 3 * totalParticipants가 됨
             };
             const ageGroups = ['elementary', 'adolescent', 'adult'];
 
             results.forEach(res => {
                 const age = res.ageGroup;
-                const setIndex = res.quizSetIndex;
-
                 if (!ageGroups.includes(age)) return;
 
-                // 1. 기본 통계
                 stats.ageGroupCounts[age]++;
-                stats.totalScore += res.score;
-                stats.totalQuestions += res.totalQuestions;
-                stats.ageGroupScores[age].totalScore += res.score;
-                stats.ageGroupScores[age].totalQuestions += res.totalQuestions;
-
-                // 2. 세트별 통계
-                const setKey = setIndex;
-                if (!stats.setScores[age][setKey]) {
-                    stats.setScores[age][setKey] = { score: 0, questions: 0, participants: 0 };
-                }
-                stats.setScores[age][setKey].score += res.score;
-                stats.setScores[age][setKey].questions += res.totalQuestions;
-                stats.setScores[age][setKey].participants += 1;
-
-
-                // 3. 문제별 오답 (Top 5를 위한 핵심 로직)
-                const quizSet = quizData[age] ? quizData[age][setIndex] : null; 
-                if (quizSet && res.correctLog && res.correctLog.length === quizSet.length) {
-                    res.correctLog.forEach((isCorrect, qIndex) => {
-                        if (!isCorrect) { 
-                            const questionIdentifier = `${setKey}-${qIndex}`;
-                            if (!stats.questionErrors[age][questionIdentifier]) {
-                                const q = quizSet[qIndex];
-                                stats.questionErrors[age][questionIdentifier] = {
-                                    q: q.q,
-                                    emoji: q.emoji,
-                                    errors: 0
-                                };
-                            }
-                            stats.questionErrors[age][questionIdentifier].errors += 1;
-                        }
-                    });
-                }
+                stats.totalScore += res.score || 0;
+                
+                // 3문제 고정
+                const currentQuestions = 3; 
+                stats.totalQuestions += currentQuestions;
+                
+                stats.ageGroupScores[age].totalScore += res.score || 0;
+                stats.ageGroupScores[age].totalQuestions += currentQuestions;
             });
 
-            // 4. 정답률 계산
+            // 정답률 계산
             stats.overallAccuracy = stats.totalQuestions > 0 ? ((stats.totalScore / stats.totalQuestions) * 100).toFixed(1) : 0;
             
             ageGroups.forEach(age => {
                 const data = stats.ageGroupScores[age];
                 data.accuracy = data.totalQuestions > 0 ? ((data.totalScore / data.totalQuestions) * 100).toFixed(1) : 0;
-                
-                Object.values(stats.setScores[age]).forEach(setData => {
-                    setData.accuracy = setData.questions > 0 ? ((setData.score / setData.questions) * 100).toFixed(1) : 0;
-                });
             });
 
             return stats;
         }
 
         /**
-        * 참가자 연령별 분포를 원 그래프로 표시합니다. (Chart.js 사용)
-        */
+         * 퀴즈 결과를 시간별로 분석하여 일별, 월별 참가자 수를 계산합니다.
+         */
+        function analyzeByTime(results) {
+            const dailyCounts = {};
+            const monthlyCounts = {};
+
+            results.forEach(res => {
+                // 타임스탬프가 Date 객체여야 합니다. (fetchResultsFromFirestore에서 변환됨)
+                const timestamp = res.timestamp || new Date();
+                
+                // Daily Key (YYYY-MM-DD)
+                const dateKey = timestamp.toISOString().split('T')[0];
+                dailyCounts[dateKey] = (dailyCounts[dateKey] || 0) + 1;
+
+                // Monthly Key (YYYY-MM)
+                const monthKey = dateKey.substring(0, 7);
+                monthlyCounts[monthKey] = (monthlyCounts[monthKey] || 0) + 1;
+            });
+
+            return { dailyCounts, monthlyCounts };
+        }
+        
+        // -------------------------------------------------------------------------
+        // 4. 시각화 함수
+        // -------------------------------------------------------------------------
+
+        /**
+         * 참가자 연령별 분포를 원 그래프로 표시합니다. (Chart.js 사용)
+         */
         function displayPieChart(analysis) {
             const total = analysis.totalParticipants;
             const counts = [
@@ -249,28 +244,20 @@ function analyzeResults(results, quizData) {
                     datasets: [{
                         data: counts,
                         backgroundColor: ['#FBBF24', '#22D3EE', '#F87171'], 
-                        hoverOffset: 4
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // 컨테이너 크기에 맞춤
+                    maintainAspectRatio: false, 
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
+                        legend: { position: 'bottom' },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.raw !== null) {
-                                        const percentage = total > 0 ? ((context.raw / total) * 100).toFixed(1) : 0;
-                                        label += `${context.raw}명 (${percentage}%)`;
-                                    }
-                                    return label;
+                                    const rawValue = context.raw;
+                                    const percentage = total > 0 ? ((rawValue / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${rawValue}명 (${percentage}%)`;
                                 }
                             }
                         }
@@ -280,8 +267,8 @@ function analyzeResults(results, quizData) {
         }
 
         /**
-        * 통계 요약 카드 (전체 정답률 및 연령별 분포 숫자)를 표시합니다.
-        */
+         * 통계 요약 카드 (전체 정답률 및 연령별 분포 숫자)를 표시합니다.
+         */
         function displaySummary(analysis) {
             const cardsContainer = document.getElementById('summary-cards');
             cardsContainer.innerHTML = ''; 
@@ -301,27 +288,21 @@ function analyzeResults(results, quizData) {
             
             cardsContainer.innerHTML += createCard('총 참가 횟수', `${total}회`, 'indigo');
             cardsContainer.innerHTML += createCard('전체 정답률', `${analysis.overallAccuracy}%`, 'green');
-            cardsContainer.innerHTML += createCard('초등 참가자 수', `${countE}명`, 'yellow', `(${total > 0 ? ((countE / total) * 100).toFixed(1) : 0}%)`);
-            cardsContainer.innerHTML += createCard('청소년/성인 참가자 수', `청소년: ${countA}명 / 성인: ${countAd}명`, 'purple');
-        }
-
-        /**
-        * 연령별 정답률 카드만 표시합니다.
-        */
-        function displayAgeGroupAccuracyCards(analysis) {
-            const displayContainer = document.getElementById('age-group-accuracy-display');
-            displayContainer.innerHTML = '';
+            cardsContainer.innerHTML += createCard('총 문제 수', `${analysis.totalQuestions}개`, 'blue');
             
+            // 연령별 정답률 카드
             const ageData = analysis.ageGroupScores;
+            const ageCardsContainer = document.getElementById('age-accuracy-display');
+            ageCardsContainer.innerHTML = '';
             
             const ageCards = [
-                { age: 'elementary', label: '초등 정답률', color: 'yellow', acc: ageData.elementary.accuracy },
-                { age: 'adolescent', label: '청소년 정답률', color: 'cyan', acc: ageData.adolescent.accuracy },
-                { age: 'adult', label: '성인 정답률', color: 'red', acc: ageData.adult.accuracy },
+                { label: '초등 정답률', color: 'yellow', acc: ageData.elementary.accuracy },
+                { label: '청소년 정답률', color: 'cyan', acc: ageData.adolescent.accuracy },
+                { label: '성인 정답률', color: 'red', acc: ageData.adult.accuracy },
             ];
 
             ageCards.forEach(card => {
-                displayContainer.innerHTML += `
+                ageCardsContainer.innerHTML += `
                     <div class="stats-card bg-white p-4 rounded-lg border-l-4 border-${card.color}-500 shadow-md">
                         <p class="text-sm font-medium text-gray-500">${card.label}</p>
                         <p class="text-3xl font-extrabold text-${card.color}-600 mt-1">${card.acc}%</p>
@@ -331,98 +312,82 @@ function analyzeResults(results, quizData) {
         }
 
         /**
-        * 연령별 세트별 정답률 테이블을 표시합니다.
-        */
-        function displaySetAccuracyTable(analysis) {
-            const tableContainer = document.getElementById('set-accuracy-table-container');
-            let tableHTML = `
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연령대</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">퀴즈 세트 (종류)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">참가 횟수</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 정답 / 총 문제</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">정답률 (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-            `;
+         * 일별 및 월별 참가자 수를 바 차트로 표시합니다.
+         */
+        function displayTimeStats(timeStats) {
+            const { dailyCounts, monthlyCounts } = timeStats;
 
-            const ageLabels = { elementary: '초등', adolescent: '청소년', adult: '성인' };
-            const setLabels = ['Set 1', 'Set 2', 'Set 3'];
+            // 1. 일별 차트 (최근 30일 데이터만 표시)
+            const sortedDailyKeys = Object.keys(dailyCounts).sort().slice(-30);
+            const dailyData = sortedDailyKeys.map(key => dailyCounts[key]);
 
-            ['elementary', 'adolescent', 'adult'].forEach(age => {
-                const setScores = analysis.setScores[age];
-                const setIndices = Object.keys(setScores).sort((a, b) => Number(a) - Number(b));
-
-                setIndices.forEach(setIndex => {
-                    const setData = setScores[setIndex];
-                    
-                    tableHTML += `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ageLabels[age]}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setLabels[setIndex] || `Set ${Number(setIndex) + 1}`}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setData.participants}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${setData.score} / ${setData.questions}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">${setData.accuracy}%</td>
-                        </tr>
-                    `;
-                });
+            if (window.dailyBarChartInstance) window.dailyBarChartInstance.destroy();
+            
+            const dailyCtx = document.getElementById('daily-bar-chart').getContext('2d');
+            window.dailyBarChartInstance = new Chart(dailyCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedDailyKeys,
+                    datasets: [{
+                        label: '일별 참가자 수',
+                        data: dailyData,
+                        backgroundColor: '#6366F1', // Indigo
+                        borderColor: '#4F46E5',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '참가자 수' } },
+                        x: { title: { display: true, text: '날짜' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
             });
 
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            tableContainer.innerHTML = tableHTML;
-        }
+            // 2. 월별 차트
+            const sortedMonthlyKeys = Object.keys(monthlyCounts).sort();
+            const monthlyData = sortedMonthlyKeys.map(key => monthlyCounts[key]);
 
-        /**
-        * 연령별 Top 5 오답 문제를 표시합니다.
-        */
-        function displayTop5Errors(analysis) {
-            const top5Container = document.getElementById('top-5-errors-container');
-            top5Container.innerHTML = '';
+            if (window.monthlyBarChartInstance) window.monthlyBarChartInstance.destroy();
 
-            const ageLabels = { elementary: '초등', adolescent: '청소년', adult: '성인' };
-
-            ['elementary', 'adolescent', 'adult'].forEach(age => {
-                const errorMap = analysis.questionErrors[age];
-                
-                const sortedErrors = Object.values(errorMap)
-                    .sort((a, b) => b.errors - a.errors)
-                    .slice(0, 5); 
-
-                let listItems = sortedErrors.map((item, index) => `
-                    <li class="p-3 border-b last:border-b-0">
-                        <span class="font-bold text-lg text-red-600 mr-2">#${index + 1}</span>
-                        <span class="text-gray-900">${item.emoji} ${item.q.length > 30 ? item.q.substring(0, 30) + '...' : item.q}</span>
-                        <span class="float-right text-sm font-semibold text-red-500">${item.errors}회 오답</span>
-                    </li>
-                `).join('');
-
-                top5Container.innerHTML += `
-                    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500">
-                        <h4 class="text-lg font-bold text-gray-700 mb-3">${ageLabels[age]} 오답 TOP 5</h4>
-                        <ul class="divide-y divide-gray-200">
-                            ${listItems || '<li class="text-gray-500 p-3">오답 데이터가 충분하지 않습니다.</li>'}
-                        </ul>
-                    </div>
-                `;
+            const monthlyCtx = document.getElementById('monthly-bar-chart').getContext('2d');
+            window.monthlyBarChartInstance = new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedMonthlyKeys,
+                    datasets: [{
+                        label: '월별 참가자 수',
+                        data: monthlyData,
+                        backgroundColor: '#F97316', // Orange
+                        borderColor: '#EA580C',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '참가자 수' } },
+                        x: { title: { display: true, text: '월' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
             });
         }
 
         /**
-        * 로우 데이터를 테이블로 표시합니다. 
-        */
+         * 로우 데이터를 테이블로 표시합니다. 
+         */
         function displayRawDataTable(results) {
             const tableContainer = document.getElementById('raw-data-table-container');
             let tableHTML = `
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID (문서)</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연령대</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">세트 Index</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">점수</th>
@@ -433,20 +398,21 @@ function analyzeResults(results, quizData) {
                     <tbody class="bg-white divide-y divide-gray-200">
             `;
 
-            [...results].reverse().forEach(res => {
+            // 최신 순으로 표시
+            [...results].forEach(res => {
                 const ageLabel = { elementary: '초등', adolescent: '청소년', adult: '성인' }[res.ageGroup] || res.ageGroup;
-                const formattedDate = new Date(res.timestamp).toLocaleString('ko-KR', { 
+                const timestampValue = res.timestamp ? (res.timestamp instanceof Date ? res.timestamp.getTime() : res.timestamp) : Date.now();
+                const formattedDate = new Date(timestampValue).toLocaleString('ko-KR', { 
                     year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
                 });
-                // 정답 상세 (O/X 문자열로 표시)
                 const correctDetail = res.correctLog ? res.correctLog.map(c => c ? 'O' : 'X').join('') : 'N/A';
 
                 tableHTML += `
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900">${res.id ? res.id.substring(0, 10) + '...' : 'N/A'}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ageLabel}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${res.quizSetIndex}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-700">${res.score} / ${res.totalQuestions}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${res.quizSetIndex !== undefined ? res.quizSetIndex : 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-700">${res.score !== undefined ? res.score : 'N/A'} / 3</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">${correctDetail}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
                     </tr>
@@ -461,27 +427,26 @@ function analyzeResults(results, quizData) {
         }
 
         /**
-        * 로우 데이터를 CSV 파일로 내보냅니다.
-        */
+         * 로우 데이터를 CSV 파일로 내보냅니다.
+         */
         function exportToCsv(results) {
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM 추가 (한글 깨짐 방지)
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
             
-            // 헤더
             const headers = ["참가자 ID", "연령대", "퀴즈 세트 Index", "점수", "총 문제 수", "정답 상세 (O=정답, X=오답)", "날짜 (ISO)"];
             csvContent += headers.join(",") + "\n";
             
-            // 데이터
             results.forEach(res => {
                 const correctDetail = res.correctLog ? res.correctLog.map(c => c ? 'O' : 'X').join('') : 'N/A';
+                const dateIso = res.timestamp ? (res.timestamp instanceof Date ? res.timestamp.toISOString() : new Date(res.timestamp).toISOString()) : new Date().toISOString();
                 
                 const row = [
                     `"${res.id || 'N/A'}"`, 
                     res.ageGroup,
-                    res.quizSetIndex,
-                    res.score,
-                    res.totalQuestions,
+                    res.quizSetIndex !== undefined ? res.quizSetIndex : 'N/A',
+                    res.score !== undefined ? res.score : 'N/A',
+                    3, // 3문제로 고정
                     `"${correctDetail}"`, 
-                    res.timestamp
+                    dateIso
                 ];
                 csvContent += row.map(item => {
                     if (typeof item === 'string') {
@@ -491,65 +456,50 @@ function analyzeResults(results, quizData) {
                 }).join(",") + "\n";
             });
 
-            // 다운로드 실행
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `quiz_stats_${new Date().toISOString().slice(0, 10)}.csv`);
+            link.setAttribute("download", `3quiz_stats_data_${new Date().toISOString().slice(0, 10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
-        
+
         // -------------------------------------------------------------------------
         // 5. 초기화 및 메인 로직 실행
         // -------------------------------------------------------------------------
-        // ---------------------------------------------
-// 3. 페이지 로드 로직 수정 (데이터 로딩을 비동기로 처리)
-// ---------------------------------------------
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('back-to-quiz-btn').addEventListener('click', () => {
+                // 퀴즈 화면으로 이동 (파일명은 사용자 환경에 맞게 유지)
+                window.location.href = 'zerowasteOXQuiz.html';
+            });
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // 퀴즈 페이지로 돌아가는 버튼 경로 수정
-    document.getElementById('back-to-quiz-btn').addEventListener('click', () => {
-        window.location.href = 'zerowasteOXQuiz.html'; // 파일명 수정 적용
-    });
-
-    // 1. **JSON 파일에서 퀴즈 데이터 로드**
-    const quizData = await loadQuizData(); 
-    if (!quizData) {
-        document.getElementById('loading-message').textContent = "퀴즈 데이터 로딩 실패. JSON 파일을 확인하세요.";
-        return;
-    }
-
-            // 2. Firebase에서 결과 데이터 로드 (기존 로직)
-    const results = await fetchResultsFromFirestore();
-    
-    // 로딩 메시지 제거 및 콘텐츠 표시 (기존 로직)
-    document.getElementById('loading-message').classList.add('hidden');
-    document.getElementById('stats-content').classList.remove('hidden');
+            const results = await fetchResultsFromFirestore();
+            
+            document.getElementById('loading-message').classList.add('hidden');
+            document.getElementById('stats-content').classList.remove('hidden');
 
             if (results.length === 0) {
-                document.getElementById('raw-data-section').innerHTML = "<p class='text-gray-500 p-4'>저장된 퀴즈 결과가 없거나, 최신 분석에 필요한 데이터(정답 로그)가 부족합니다. 퀴즈를 먼저 진행해주세요.</p>";
+                document.getElementById('raw-data-table-container').innerHTML = "<p class='text-gray-500 p-4'>저장된 퀴즈 결과가 없습니다. 퀴즈를 먼저 진행해주세요.</p>";
                 document.getElementById('export-csv-btn').disabled = true;
                 return;
             }
             
-            // 3. 분석 실행 (분석 함수에 로드된 quizData를 전달해야 합니다.)
-    const analysis = analyzeResults(results, quizData); // <-- analyzeResults 함수 변경 필요
-            
-            // 3. 시각화 및 통계 표시 함수 호출
-            displayPieChart(analysis); 
+            // 1. 누적 통계 분석 및 표시
+            const analysis = analyzeResults(results);
             displaySummary(analysis); 
-            displayAgeGroupAccuracyCards(analysis); 
-            displaySetAccuracyTable(analysis); 
-            displayTop5Errors(analysis); 
+            displayPieChart(analysis); 
 
-            // 4. 로우 데이터 표시 및 다운로드 버튼 활성화
+            // 2. 시간별 통계 분석 및 표시
+            const timeStats = analyzeByTime(results);
+            displayTimeStats(timeStats);
+
+            // 3. 로우 데이터 표시 및 다운로드 버튼 활성화
             displayRawDataTable(results);
             const exportBtn = document.getElementById('export-csv-btn');
             exportBtn.disabled = false;
             exportBtn.addEventListener('click', () => {
-                exportToCsv(results); 
+                exportToCsv(results);
             });
         });
 
