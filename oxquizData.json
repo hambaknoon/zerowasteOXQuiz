@@ -1,7 +1,7 @@
 {
 "elementary": [
-                [
-                  {
+  [
+    {
                     "emoji": "🥤",
                     "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
                     "q_en": "Recycling can turn all trash into resources.",
@@ -84,7 +84,8 @@
     {
       "emoji": "🪱",
       "q": "쓰레기를 버리면 땅속에서 바로 사라져요.",
-      "q_en": "When trash is thrown away, it disappears immediately in the ground.",   "a": "X",
+      "q_en": "When trash is thrown away, it disappears immediately in the ground.",   
+      "a": "X",
       "exp": "쓰레기는 바로 사라지지 않고 쌓여요. \n쌓인 쓰레기도 사라지는데 오랜 시간이 걸려요.",
       "exp_en": "Trash doesn't disappear immediately; it accumulates. \nIt takes a very long time for the accumulated trash to decompose."
     },
@@ -357,7 +358,7 @@
         "q": "친구와 함께 ‘일회용품 안 쓰기 챌린지’를 하면 효과가 커진다.",
         "q_en": "Doing a 'No Disposable Items Challenge' with friends amplifies the effect.",
         "a": "O",
-        "exp": "Together, the sustainability increases, and surrounding behaviors change.",
+        "exp": "함께 할수록 지속성이 높아지고, 주변 행동도 바뀝니다.",
         "exp_en": "When done together, persistence increases, and it influences the behavior of those around you."
       },
       {
@@ -746,7 +747,7 @@
         "q_en": "The recycling rate for discarded clothing is over half.",
         "a": "X",
         "exp": "많은 양이 낮은 품질로 인해 소각/매립되어 의류 소비의 윤리적 책임을 제기해요.",
-        en": "A large quantity is incinerated/landfilled due to low quality, raising ethical concerns about clothing consumption."
+        "exp_en": "A large quantity is incinerated/landfilled due to low quality, raising ethical concerns about clothing consumption."
       },
       {
         "emoji": "🥢",
