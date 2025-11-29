@@ -253,11 +253,11 @@
             localStorage.setItem(LANG_STORAGE_KEY, langCode); 
             updateUI();
 
-            if (quizData) {
-                startAdultQuiz();
-            } else {
-                 console.log("데이터 로드 대기 중...");
-            }
+           // if (quizData) {
+           //     startAdultQuiz();
+           // } else {
+           //      console.log("데이터 로드 대기 중...");
+           // }
         }
     }
 
@@ -270,6 +270,7 @@
         }
     }
 
+    
     function startAdultQuiz() {
         if (!quizData) {
             console.error("퀴즈 데이터가 로드되지 않았습니다.");
@@ -400,11 +401,32 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
         // --- DOM 요소 변수 할당 ---
-        oBtn = document.getElementById('o-btn');
-        xBtn = document.getElementById('x-btn');
-        nextBtn = document.getElementById('next-btn');
-        restartBtn = document.getElementById('restart-btn');
-        backToStartBtn = document.getElementById('back-to-start-btn');
+        // --- 이벤트 리스너 연결 ---
+        oBtn.addEventListener('click', () => checkAnswer('O'));
+        xBtn.addEventListener('click', () => checkAnswer('X'));
+        nextBtn.addEventListener('click', nextQuestion);
+        
+        restartBtn.addEventListener('click', () => showScreen('ageSelection')); // ⭐ 수정: 결과 화면에서 시작 버튼을 누르면 언어 선택 화면으로 이동
+    
+        // ⭐ 수정: "처음으로" 버튼을 누르면 언어 선택 화면으로 이동
+        backToStartBtn.addEventListener('click', () => showScreen('ageSelection'));
+
+        // ⭐ 추가: 언어 선택 화면의 '퀴즈 시작하기' 버튼에 이벤트 연결
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        if (startQuizBtn) {
+            startQuizBtn.addEventListener('click', () => {
+                if (quizData) {
+                    startAdultQuiz(); // 퀴즈 시작
+                } else {
+                    alert("퀴즈 데이터를 로드하는 중입니다. 잠시 후 다시 시도해 주세요.");
+                }
+            });
+        }
+
+        // 언어 선택 버튼 이벤트 리스너 연결 (이제는 언어만 설정)
+        document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+            
         quizTitle = document.getElementById('quiz-title');
 
         screens = {
@@ -541,6 +563,10 @@ border-color: #ef4444 !important;
                     <img id="lang-en" src="./img/english.jpg" alt="English" data-lang="en" 
                          class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-xl ring-4 ring-offset-2 ring-transparent cursor-pointer transition-transform transform hover:scale-105 opacity-50 hover:opacity-75">
                 </div>
+                
+                <button id="start-quiz-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
+                    퀴즈 시작하기
+                </button>
                 <p class="text-xs text-gray-400 mt-6 hidden">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
             </div>
         </div>
