@@ -1,0 +1,828 @@
+{
+"elementary": [
+                [
+                    {
+    "emoji": "🥤",
+    "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
+    "q_en": "Recycling can turn all trash into resources.",
+    "a": "X",
+    "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
+    "exp_en": "Not all waste can be recycled. Reducing is the best option!"
+  },
+  {
+    "emoji": "🐟",
+    "q": "바다 속 물고기들은 플라스틱을 먹지 않아요.",
+    "q_en": "Fish in the ocean don't eat plastic.",
+    "a": "X",
+    "exp": "물고기들이 플라스틱을 먹이인 줄 알고 먹어요.",
+    "exp_en": "Fish mistake plastic for food and eat it."
+  },
+  {
+    "emoji": "♻️",
+    "q": "남긴 음식물 쓰레기는 모두 퇴비로 완벽하게 재활용돼요.",
+    "q_en": "All leftover food waste is perfectly recycled into compost.",
+    "a": "X",
+    "exp": "많은 양이 소각되거나 매립되어 환경을 오염시켜요.",
+    "exp_en": "A large amount of food waste is incinerated or landfilled, polluting the environment."
+  },
+  {
+    "emoji": "✏️",
+    "q": "새 학용품을 사기 전에 쓰던 것을 끝까지 사용하는 것은 쓰레기를 줄이는 일이에요.",
+    "q_en": "Using old school supplies until the end before buying new ones helps reduce waste.",
+    "a": "O",
+    "exp": "**'덜 사기(Reduce)'**가 재활용하는 것 보다 더 중요해요.",
+    "exp_en": "**'Reducing'** is more important than recycling."
+  },
+  {
+    "emoji": "🥤",
+    "q": "일회용 컵은 재활용 되니 그냥 써도 괜찮아요",
+    "q_en": "It's okay to use disposable cups since they are recyclable.",
+    "a": "X",
+    "exp": "한 번 사용한 컵 쓰레기가 모이면 큰 쓰레기가 돼요.",
+    "exp_en": "Even if used once, many disposable cups accumulate to form a huge amount of waste."
+  },
+  {
+    "emoji": "🍞",
+    "q": "유통기한이 지난 음식은 버려야 해요.",
+    "q_en": "Expired food must be thrown away.",
+    "a": "X",
+    "exp": "상하지 않았으면 먹어도 괜찮아요. 음식물 낭비를 막는 용감하고 지혜로운 행동이에요!",
+    "exp_en": "If the food is not spoiled, it's okay to eat it. This is a brave and wise action to prevent food waste."
+  },
+  {
+    "emoji": "🛠️",
+    "q": "물건을 고칠 수 있으면 새로 사지 않아도 돼요.",
+    "q_en": "If an item can be fixed, you don't need to buy a new one.",
+    "a": "O",
+    "exp": "고쳐서 **'다시 쓰기(Reuse)'**는 쓰레기를 줄이는 멋진 일이에요.",
+    "exp_en": "**'Reusing'** by fixing items is a great way to reduce waste."
+  },
+  {
+    "emoji": "💰",
+    "q": "텀블러 사용은 환경을 보호하기도 하지만 직접 돈을 아껴주는 효과는 없어요.",
+    "q_en": "Using a tumbler protects the environment but doesn't directly save you money.",
+    "a": "X",
+    "exp": "대부분의 카페에서는 텀블러 할인 혜택도 있어요.",
+    "exp_en": "Most cafes offer discounts for using a personal tumbler."
+  },
+  {
+    "emoji": "👶",
+    "q": "물티슈를 안 쓰는 것도 쓰레기를 줄이는 행동이에요.",
+    "q_en": "Not using wet wipes is also an action that reduces waste.",
+    "a": "O",
+    "exp": "물티슈는 플라스틱으로 만들어졌지만 재활용이 안 되는 일반 쓰레기에요.",
+    "exp_en": "Wet wipes are made of plastic but are general waste and cannot be recycled."
+  },
+  {
+    "emoji": "👪",
+    "q": "쓰레기를 줄이는 건 어른들이 해야 하는 일이에요",
+    "q_en": "Reducing waste is solely the responsibility of adults.",
+    "a": "X",
+    "exp": "어린이도 쓰레기를 배출해요. 쓰레기를 줄이는 작은 습관이 지구를 바꿔요",
+    "exp_en": "Children also produce waste. Small habits that reduce trash can change the planet."
+  }
+                ],
+               [
+  {
+    "emoji": "🪱",
+    "q": "쓰레기를 버리면 땅속에서 바로 사라져요.",
+    "q_en": "When trash is thrown away, it disappears immediately in the ground.",
+    "a": "X",
+    "exp": "쓰레기는 바로 사라지지 않고 쌓여요. \n쌓인 쓰레기도 사라지는데 오랜 시간이 걸려요.",
+    "exp_en": "Trash doesn't disappear immediately; it accumulates. \nIt takes a very long time for the accumulated trash to decompose."
+  },
+  {
+    "emoji": "🚚",
+    "q": "분리배출을 열심히 하면, 모든 쓰레기가 재활용이 돼요.",
+    "q_en": "If we separate our trash diligently, all of it will be recycled.",
+    "a": "X",
+    "exp": "일부만 재활용이 되어요. 쓰레기 **'양'** 자체를 줄여야 쓰레기가 줄어요.",
+    "exp_en": "Only a portion is recycled. We must reduce the **'amount'** of trash itself to decrease waste."
+  },
+  {
+    "emoji": "🏷️",
+    "q": "플라스틱병의 라벨 스티커는 떼지 않고 버려도 재활용에 문제없어요.",
+    "q_en": "It's fine to throw away plastic bottles without removing the label stickers, as it won't affect recycling.",
+    "a": "X",
+    "exp": "스티커는 재활용을 방해해요. 꼭 떼서 버려주세요!",
+    "exp_en": "Stickers interfere with the recycling process. Please be sure to remove them before disposing!"
+  },
+  {
+    "emoji": "🥕",
+    "q": "먹을 만큼만 먹고 남기지 않는 것이 지구 지키는 방법이에요.",
+    "q_en": "Eating only what you need and not leaving leftovers is a way to protect the planet.",
+    "a": "O",
+    "exp": "음식물 쓰레기를 줄이는 것이 환경 보호의 시작이에요.",
+    "exp_en": "Reducing food waste is the beginning of environmental protection."
+  },
+  {
+    "emoji": "💔",
+    "q": "깨진 유리병은 신문지에 싸서 재활용 쓰레기로 버려야 해요.",
+    "q_en": "Broken glass bottles should be wrapped in newspaper and disposed of as recyclable waste.",
+    "a": "X",
+    "exp": "깨진 유리는 재활용이 안 돼요. 일반 쓰레기로 버려야 해요.",
+    "exp_en": "Broken glass is not recyclable. It should be disposed of as general waste."
+  },
+  {
+    "emoji": "🧼",
+    "q": "액체 비누보다 고체 비누가 플라스틱 쓰레기를 덜 만들어요.",
+    "q_en": "Bar soap creates less plastic waste than liquid soap.",
+    "a": "O",
+  	"exp": "고체 비누는 플라스틱 용기가 필요 없어서 더 좋아요.",
+  	"exp_en": "Bar soap is better because it doesn't require plastic containers."
+  },
+  {
+    "emoji": "👕",
+    "q": "새 옷보다 물려 입는 옷이 가장 좋은 제로웨이스트 실천이에요.",
+    "q_en": "Wearing hand-me-down clothes instead of buying new ones is the best Zero Waste practice.",
+    "a": "O",
+    "exp": "**'다시 쓰기(Reuse)'**는 새 물건 만들 때 나오는 쓰레기를 막아줘요.",
+    "exp_en": "**'Reusing'** prevents waste generated when manufacturing new items."
+  },
+  {
+    "emoji": "🐟",
+    "q": "내가 쓰는 플라스틱은 아주 작게 부서져 물고기에게 위험할 수 있어요.",
+    "q_en": "The plastic I use can break down into tiny pieces that are dangerous to fish.",
+    "a": "O",
+    "exp": "맞아요. **'미세 플라스틱'**은 물고기 뿐만 아니라 우리몸에서도 발견되고 있어요.",
+    "exp_en": "That's right. **'Microplastics'** are found not only in fish but also in our bodies."
+  },
+  {
+  	"emoji": "🍱",
+  	"q": "나들이 갈때 일회용 용기 대신 개인 식기를 사용하면 쓰레기가 안 생겨요.",
+  	"q_en": "Using personal containers instead of disposable ones for picnics prevents waste.",
+  	"a": "O",
+  	"exp": "조금 불편해도 다시 쓰는 작은 노력이 큰 변화를 만들어요.",
+  	"exp_en": "A small effort to reuse, even if slightly inconvenient, can create a big change."
+  },
+  {
+  	"emoji": "🎯",
+  	"q": "제로웨이스트는 **‘쓰레기 0개’**를 뜻해요",
+  	"q_en": "Zero Waste means **'zero trash'**.",
+  	"a": "O",
+  	"exp": "‘쓰레기 0개’를 뜻하는게 맞아요! 완벽하진 않아도 줄이려는 마음이 중요해요.",
+  	"exp_en": "It does mean 'zero trash'! The effort to reduce is important, even if not perfect."
+  }
+],
+                [
+  {
+  	"emoji": "🏭",
+  	"q": "쓰레기는 모두 소각장에서 **‘깨끗하게’** 없앨 수 있어요",
+  	"q_en": "All trash can be **'cleanly'** eliminated in an incinerator.",
+  	"a": "X",
+  	"exp": "태워도 오염이 생겨요. \n쓰레기는 안 만드는 게 제일 좋아요.",
+  	"exp_en": "Burning still causes pollution. \nIt is best not to create waste in the first place."
+  },
+  {
+  	"emoji": "🥦",
+  	"q": "싫어하는 반찬도 조금씩 먹어보는 노력은 음식물 낭비를 줄여요.",
+  	"q_en": "Trying to eat small amounts of side dishes you don't like helps reduce food waste.",
+  	"a": "O",
+  	"exp": "음식을 버리는 행동을 줄이고 소중함을 아는 것이 중요해요.",
+  	"exp_en": "It is important to reduce the act of throwing away food and to appreciate its value."
+  },
+  {
+  	"emoji": "👟",
+  	"q": "낡고 더러워진 옷도 헌옷 수거함에 넣으면 모두 재활용돼요.",
+  	"q_en": "Old and dirty clothes can all be recycled if put in the used clothes collection bin.",
+  	"a": "X",
+  	"exp": "심하게 오염된 옷은 재활용 되지 않아요.",
+  	"exp_en": "Severely contaminated clothes are not recycled."
+  },
+  {
+  	"emoji": "🍫",
+  	"q": "포장이 적은 과자를 고르는 것은 쓰레기를 줄이는 현명한 행동이다.",
+  	"q_en": "Choosing snacks with minimal packaging is a smart action to reduce waste.",
+  	"a": "O",
+  	"exp": "포장이 적은 제품을 선택하는 것도 훌륭한 실천이에요.",
+  	"exp_en": "Choosing products with less packaging is an excellent practice."
+  },
+  {
+  	"emoji": "🧃",
+  	"q": "음료수 병은 물로 헹구지 않고 버려도 괜찮아요.",
+  	"q_en": "It's okay to dispose of beverage bottles without rinsing them with water.",
+  	"a": "X",
+  	"exp": "깨끗하게 헹궈야 다른 재활용품을 오염시키지 않아요.",
+  	"exp_en": "They must be rinsed clean to prevent contamination of other recyclables."
+  },
+  {
+  	"emoji": "🛠️",
+  	"q": "고장 난 물건을 새것 대신 고쳐 쓰면 쓰레기를 줄일 수 있어요.",
+  	"q_en": "Fixing broken items instead of replacing them with new ones can reduce waste.",
+  	"a": "O",
+  	"exp": "물건을 고쳐 쓰면 **'다시 쓰기(Reuse)'**의 가치를 배울 수 있어요.",
+  	"exp_en": "By fixing items, we learn the value of **'Reusing'**."
+  },
+  {
+  	"emoji": "🥤",
+  	"q": "종이컵 대신 텀블러를 쓰면 쓰레기가 줄어요",
+  	"q_en": "Using a tumbler instead of a paper cup reduces waste.",
+  	"a": "O",
+  	"exp": "나의 컵을 사용하는 것은 멋지고 환경에도 좋아요.",
+  	"exp_en": "Using your own cup is cool and good for the environment."
+  },
+  {
+  	"emoji": "🛒",
+  	"q": "가족들에게 장바구니를 챙겼냐고 물어보는 것은 가족들이 제로웨이스트를 실천하는데 도움이 돼요.",
+  	"q_en": "Asking family members if they brought a reusable bag helps them practice Zero Waste.",
+  	"a": "O",
+  	"exp": "나의 관심과 행동이 가족 모두의 행동을 바꿀 수 있어요!",
+  	"exp_en": "Your attention and actions can change the behavior of your whole family!"
+  },
+  {
+  	"emoji": "🗑️",
+  	"q": "재활용 쓰레기통에 분리배출 하면 다 재활용돼요",
+  	"q_en": "Everything put in the recycling bin is fully recycled.",
+  	"a": "X",
+  	"exp": "재활용률은 생각보다 낮아요. 줄이는 것이 먼저예요.",
+  	"exp_en": "The recycling rate is lower than you might think. Reducing is the priority."
+  },
+  {
+  	"emoji": "🌍",
+  	"q": "내가 줄이는 쓰레기가 지구를 지키는 힘이 돼요",
+  	"q_en": "The waste I reduce becomes the power that protects the Earth.",
+  	"a": "O",
+  	"exp": "제로웨이스트는 우리들의 실천에서부터 시작돼요.",
+  	"exp_en": "Zero Waste starts with our actions."
+  }
+]
+            ],
+"adolescent": [
+                [
+  {
+  	"emoji": "🎯",
+  	"q": "'제로웨이스트 도시'는 쓰레기를 100% 재활용하는 것이 목표다.",
+  	"q_en": "The goal of a 'Zero Waste City' is to recycle 100% of its waste.",
+  	"a": "X",
+  	"exp": "재활용 전에 쓰레기 발생 **'최소화'**가 첫 번째 목표예요.",
+  	"exp_en": "**'Minimizing'** waste generation before recycling is the first goal."
+  },
+  {
+  	"emoji": "🎋",
+  	"q": "대나무 칫솔을 쓰는 것은 쓰레기 문제 해결에 미치는 영향이 미미하다.",
+  	"q_en": "Using a bamboo toothbrush has a negligible impact on solving the waste problem.",
+  	"a": "X",
+  	"exp": "많은 개인의 작은 행동이 모여 기업과 시스템을 변화시켜요.",
+  	"exp_en": "The small actions of many individuals accumulate to change businesses and systems."
+  },
+  {
+  	"emoji": "🧾",
+  	"q": "종이 영수증은 종이 재활용품으로 분리 배출하면 된다.",
+  	"q_en": "Paper receipts can be sorted and disposed of as paper recyclables.",
+  	"a": "X",
+  	"exp": "특수 코팅(감열지) 때문에 일반 쓰레기로 버려야 해요.",
+  	"exp_en": "Due to the special coating (thermal paper), they must be disposed of as general waste."
+  },
+  {
+  	"emoji": "🏙️",
+  	"q": "쓰레기는 태우는 순간 ‘없어지는’ 것이다.",
+  	"q_en": "Trash 'disappears' the moment it is burned.",
+  	"a": "X",
+  	"exp": "쓰레기를 다 태워도 소각재가 남고 무엇보다 사람과 지구에 유해한 물질을 배출해요",
+  	"exp_en": "Even after burning, ash remains, and more importantly, harmful substances are released into the environment and people."
+  },
+  {
+  	"emoji": "👗",
+  	"q": "옷을 많이 사는 습관은 기후 변화에 큰 영향을 준다.",
+  	"q_en": "The habit of buying a lot of clothes has a significant impact on climate change.",
+  	"a": "O",
+  	"exp": "**'패스트 패션'** 산업은 전 세계 탄소 배출의 큰 부분을 차지해요.",
+  	"exp_en": "The **'Fast Fashion'** industry accounts for a large portion of global carbon emissions."
+  },
+  {
+  	"emoji": "🤝",
+  	"q": "중고 물품 플랫폼 이용은 '재활용'보다 **'재사용'**에 해당한다.",
+  	"q_en": "Using second-hand platforms is considered **'reuse'** rather than 'recycling'.",
+  	"a": "O",
+  	"exp": "재사용(Reuse)이 재활용(Recycle)보다 더 높은 단계의 실천이에요.",
+  	"exp_en": "Reuse is a higher-level practice than Recycle."
+  },
+  {
+  	"emoji": "🍔",
+  	"q": "우리가 하루에 버리는 쓰레기의 대부분은 음식물 쓰레기다.",
+  	"q_en": "Most of the waste we discard every day is food waste.",
+  	"a": "X",
+  	"exp": "포장재, 일회용품, 플라스틱이 더 큰 비중을 차지해요.",
+  	"exp_en": "Packaging, disposable items, and plastics make up a larger proportion."
+  },
+  {
+  	"emoji": "🚫",
+  	"q": "재활용이 어려운 제품의 생산을 막기위한 기업 규제는 필요 없다.",
+  	"q_en": "There is no need for regulations to prevent companies from producing difficult-to-recycle products.",
+  	"a": "X",
+  	"exp": "**'생산자 책임'**을 강화하는 규제가 꼭 필요해요.",
+  	"exp_en": "Regulations strengthening **'Producer Responsibility'** are definitely necessary."
+  },
+  {
+  	"emoji": "🧼",
+  	"q": "세제 등을 리필해 주는 **'제로웨이스트 샵'** 이용은 쓰레기를 만들지 않는다.",
+  	"q_en": "Using a **'Zero Waste Shop'** for detergent refills does not create waste.",
+  	"a": "O",
+  	"exp": "쓰레기 자체를 만들지 않는(거절하기/줄이기, Refuse/Reduce) 소비예요.",
+  	"exp_en": "This is consumption that prevents waste creation itself (Refuse/Reduce)."
+  },
+  {
+  	"emoji": "🗣️",
+  	"q": "완벽한 제로웨이스트를 못하더라도, 시작하는 것이 더 중요하다.",
+  	"q_en": "Even if you can't achieve perfect Zero Waste, starting is more important.",
+  	"a": "O",
+  	"exp": "완벽하게 줄이는 것보다 **‘조금씩 줄이는 노력’**하는 행동이 더 중요해요 이에요",
+  	"exp_en": "The act of **'making small efforts to reduce'** is more important than achieving perfection."
+  }
+],
+               [
+  {
+  	"emoji": "🍔",
+  	"q": "우리가 하루에 버리는 쓰레기의 대부분은 음식물 쓰레기다.",
+  	"q_en": "Most of the waste we discard every day is food waste.",
+  	"a": "X",
+  	"exp": "포장재, 일회용품, 플라스틱이 더 큰 비중을 차지해요.",
+  	"exp_en": "Packaging, disposable items, and plastics make up a larger proportion."
+  },
+  {
+  	"emoji": "🖋️",
+  	"q": "튼튼한 물건을 고르는 것이 예쁜 물건을 고르는 것 보다 더 중요하다.",
+  	"q_en": "Choosing durable items is more important than choosing aesthetically pleasing ones.",
+  	"a": "O",
+  	"exp": "오래 쓰는 것(Reduce)이 환경을 생각하는 **'가치 소비'**예요.",
+  	"exp_en": "Using items for a long time (Reduce) is **'value consumption'** that considers the environment."
+  },
+  {
+  	"emoji": "🥘",
+  	"q": "급식 잔반 줄이기는 탄소 발자국 감소와 관련이 없다.",
+  	"q_en": "Reducing school meal leftovers is not related to carbon footprint reduction.",
+  	"a": "X",
+  	"exp": "음식물 쓰레기는 처리 과정에서 강력한 온실가스인 **'메탄'**을 발생시켜요.",
+  	"exp_en": "Food waste generates **'methane'**, a potent greenhouse gas, during processing."
+  },
+  {
+  	"emoji": "👭",
+  	"q": "친구와 함께 ‘일회용품 안 쓰기 챌린지’를 하면 효과가 커진다.",
+  	"q_en": "Doing a 'No Disposable Items Challenge' with friends amplifies the effect.",
+  	"a": "O",
+  	"exp": "Together, the sustainability increases, and surrounding behaviors change.",
+  	"exp_en": "When done together, persistence increases, and it influences the behavior of those around you."
+  },
+  {
+  	"emoji": "🥫",
+  	"q": "캔 음료를 마신 후, 캔은 세척하지 않아도 재활용이 잘 된다.",
+  	"q_en": "After drinking a canned beverage, the can recycles well even if not rinsed.",
+  	"a": "X",
+  	"exp": "깨끗하게 헹궈야 다른 재활용품을 오염시키지 않아요.",
+  	"exp_en": "They must be rinsed clean to prevent contamination of other recyclables."
+  },
+  {
+  	"emoji": "📳",
+  	"q": "전자제품을 자주 바꾸면 탄소 배출에도 영향이 있다.",
+  	"q_en": "Frequently changing electronic devices impacts carbon emissions.",
+  	"a": "O",
+  	"exp": "전자제품은 제조 과정이 매우 에너지 집약적입니다.",
+  	"exp_en": "The manufacturing process for electronic devices is very energy-intensive."
+  },
+  {
+  	"emoji": "🍱",
+  	"q": "빈용기에 음식을 포장해 오는 **'용기내'**는 부끄러운 일이다.",
+  	"q_en": "Bringing food in your own container ('Yong-gi-nae' practice) is embarrassing.",
+  	"a": "X",
+  	"exp": "부끄러운 일이 아니에요. 불편을 감수하는 **'용감하고 자랑스러운'** 행동이에요.",
+  	"exp_en": "It's not embarrassing. It's a **'brave and proud'** action to embrace inconvenience."
+  },
+  {
+  	"emoji": "📣",
+  	"q": "좋아하는 브랜드가 친환경 포장을 안 한다면 개선 요구 메시지를 보내야 한다.",
+  	"q_en": "If a favorite brand doesn't use eco-friendly packaging, you should send them a message requesting improvement.",
+  	"a": "O",
+  	"exp": "소비자의 적극적인 피드백과 요구가 기업을 변화시켜요.",
+  	"exp_en": "Consumers' active feedback and demands can change businesses."
+  },
+  {
+  	"emoji": "🗓️",
+  	"q": "'소비기한'을 확인하고 음식을 섭취하면 음식물 쓰레기를 줄일 수 있다.",
+  	"q_en": "Checking the 'use-by date' before eating food can reduce food waste.",
+  	"a": "O",
+  	"exp": "유통기한이 아닌 소비기한을 지키면 불필요한 음식낭비를 막을 수 있어요.",
+  	"exp_en": "Adhering to the use-by date instead of the expiration date can prevent unnecessary food waste."
+  },
+  {
+  	"emoji": "🧑‍🔬",
+  	"q": "환경을 지키는 일은 과학자들이 해야 할 일이다.",
+  	"q_en": "Protecting the environment is a job for scientists.",
+  	"a": "X",
+  	"exp": "쓰레기를 줄이는 일도 환경을 지키는 일이에요. 쓰레기를 배출하는 우리 모두가 해야 하는 일 입니다.",
+  	"exp_en": "Reducing waste is also protecting the environment. It is a job for all of us who generate waste."
+  }
+],
+               [
+  {
+  	"emoji": "🧹",
+  	"q": "낡은 면 티셔츠는 걸레로 쓰는 것보다 헌옷 수거함에 넣는 것이 더 좋다.",
+  	"q_en": "It is better to put an old cotton T-shirt in the used clothes bin than to use it as a rag.",
+  	"a": "X",
+  	"exp": "버리기 전 다른 용도로 **'재사용(Reuse)'**하는 것이 더 좋아요.",
+  	"exp_en": "It is better to **'reuse'** it for another purpose before throwing it away."
+  },
+  {
+  	"emoji": "💧",
+  	"q": "투명 페트병은 라벨 제거 없이 버려야 재활용이 잘 된다.",
+  	"q_en": "Clear PET bottles recycle well only if disposed of without label removal.",
+  	"a": "X",
+  	"exp": "라벨을 제거하고 깨끗이 헹군 뒤, 뚜껑을 닫아 배출해야 해요.",
+  	"exp_en": "You must remove the label, rinse it clean, and dispose of it with the cap closed."
+  },
+  {
+  	"emoji": "🥄",
+  	"q": "작은 플라스틱 숟가락은 재활용 마크가 있어도 버려질 때가 많다.",
+  	"q_en": "Small plastic spoons are often discarded even if they have a recycling mark.",
+  	"a": "O",
+  	"exp": "크기가 너무 작아 선별장에서 선별되지 않아 재활용이 어려워요.",
+  	"exp_en": "They are too small to be sorted at the selection facility, making recycling difficult."
+  },
+  {
+  	"emoji": "🧑‍🏫",
+  	"q": "학급에서 '일회용 플라스틱 안 쓰기'를 규칙으로 정하면 불편만 초래한다.",
+  	"q_en": "Setting a classroom rule of 'No disposable plastic' only causes inconvenience.",
+  	"a": "X",
+  	"exp": "Rules for a common goal are an important process of cooperation in creating a Zero Waste City.",
+  	"exp_en": "Rules for a common goal are an important part of cooperation in creating a Zero Waste City."
+  },
+  {
+  	"emoji": "💨",
+  	"q": "다쓴 부탄가스는 구멍 뚫지 않고 분리배출함에 넣어도 안전하다.",
+  	"q_en": "It is safe to put used butane gas canisters into the recycling bin without piercing a hole.",
+  	"a": "X",
+  	"exp": "폭발 위험이 있어 반드시 구멍을 뚫어 가스를 완전히 빼야 해요.",
+  	"exp_en": "There is a risk of explosion, so you must pierce a hole to completely release the gas."
+  },
+  {
+  	"emoji": "🏫",
+  	"q": "우리 학교에서 분리배출을 잘하면 도시의 재활용률도 달라진다.",
+  	"q_en": "Good waste sorting at our school changes the city's recycling rate.",
+  	"a": "O",
+  	"exp": "Changes in small units accumulate to change actual data.",
+  	"exp_en": "Changes in small units accumulate to change actual data."
+  },
+  {
+  	"emoji": "🔬",
+  	"q": "쓰레기 문제는 전문가가 되어야만 해결할 수 있다.",
+  	"q_en": "The waste problem can only be solved by becoming an expert.",
+  	"a": "X",
+  	"exp": "전문가도 필요하지만, 지금 당장 우리의 **'소비 습관'** 변화가 더 중요해요.",
+  	"exp_en": "Experts are needed, but the change in our **'consumption habits'** right now is more important."
+  },
+  {
+  	"emoji": "🎪",
+  	"q": "축제에서 다회용기 사용을 제안하는 것은 좋은 행동이다.",
+  	"q_en": "Suggesting the use of reusable containers at festivals is a good action.",
+  	"a": "O",
+  	"exp": "문제 해결을 위한 적극적인 제안은 공동체 변화의 핵심이에요.",
+  	"exp_en": "Active suggestions for problem-solving are key to community change."
+  },
+  {
+  	"emoji": "🏙️",
+  	"q": "내가 버린 쓰레기는 결국 내가 사는 도시로 돌아온다.",
+  	"q_en": "The trash I discard eventually returns to the city where I live.",
+  	"a": "O",
+  	"exp": "소각·매립 과정에서 공기, 물, 토양 오염으로 되돌아옵니다.",
+  	"exp_en": "It returns as air, water, and soil pollution during incineration and landfill processes."
+  },
+  {
+  	"emoji": "💡",
+  	"q": "내가 쓰레기를 줄이는 것은 작은 일이지만, 도시의 문화를 바꾸는 중요한 일이다.",
+  	"q_en": "My small effort to reduce waste is important for changing the city's culture.",
+  	"a": "O",
+  	"exp": "One person's actions accumulate to create a ‘new standard’ and culture.",
+  	"exp_en": "One person's actions accumulate to create a 'new standard' and culture."
+  }
+]
+            ],
+"adult": [
+               [
+ {
+  	"emoji": "🔥",
+  	"q": "쓰레기를 소각하는 것이 매립하는 것보다 환경에 덜 유해하다.",
+  	"q_en": "Incinerating waste is less harmful to the environment than landfilling it.",
+  	"a": "X",
+  	"exp": "소각 과정에서 다이옥신, 온실가스 등 유해 물질이 배출되고, 소각재는 유해 폐기물로 분류돼요.",
+  	"exp_en": "Harmful substances like dioxins and greenhouse gases are emitted during incineration, and the resulting ash is classified as hazardous waste."
+  },
+  {
+  	"emoji": "🛠️",
+  	"q": "고장 난 물건을 고치는 '수리 카페'는 제로웨이스트 도시의 중요한 인프라다.",
+  	"q_en": "A 'Repair Cafe' for fixing broken items is crucial infrastructure for a Zero Waste City.",
+  	"a": "O",
+  	"exp": "물건의 수명을 늘려 폐기물을 줄이는 **'재사용 촉진'** 인프라예요.",
+  	"exp_en": "It's an infrastructure that **'promotes reuse'** by extending the lifespan of items and reducing waste."
+  },
+  {
+  	"emoji": "🍽️",
+  	"q": "음식물 쓰레기를 줄이는 건 기후위기 대응에도 도움이 된다.",
+  	"q_en": "Reducing food waste helps in responding to the climate crisis.",
+  	"a": "O",
+  	"exp": "음식물이 썩을 때 메탄가스가 발생해 온실가스를 늘려요.",
+  	"exp_en": "Methane gas is generated when food decomposes, increasing greenhouse gases."
+  },
+  {
+  	"emoji": "💸",
+  	"q": "소각장 중심의 폐기물 정책이 유지되는 것은 정부의 보조금 때문이다.",
+  	"q_en": "Waste policy centered around incinerators is maintained due to government subsidies.",
+  	"a": "O",
+  	"exp": "Incineration is one of the most expensive ways to handle waste. Incinerator construction is often funded by government subsidies.",
+  	"exp_en": "Incineration is one of the most expensive ways to handle waste. Incinerator construction is often funded by government subsidies."
+  },
+  {
+  	"emoji": "🚚",
+  	"q": "분리배출만 잘하면 모든 쓰레기가 재활용된다.",
+  	"q_en": "If we sort waste properly, all of it will be recycled.",
+  	"a": "X",
+  	"exp": "실제로는 오염, 혼합 등으로 절반 이상이 소각·매립됩니다.",
+  	"exp_en": "In reality, more than half is incinerated or landfilled due to contamination and mixture."
+  },
+  {
+  	"emoji": "🤝",
+  	"q": "“필요”가 아니라 “습관”이 쓰레기를 만든다.",
+  	"q_en": "Waste is created by 'habits,' not 'needs'.",
+  	"a": "O",
+  	"exp": "Carelessly formed habits create the largest amount of waste.",
+  	"exp_en": "Carelessly formed habits create the largest amount of waste."
+  },
+  {
+  	"emoji": "☕",
+  	"q": "컵 보증금 제도는 환경 보호 효과는 있지만, 경제적으로는 시민들에게 손해다.",
+  	"q_en": "The cup deposit system is environmentally effective but economically detrimental to citizens.",
+  	"a": "X",
+  	"exp": "컵 반환 시 보증금을 돌려받으므로 일회용품 재활용률을 높이고 처리비용을 낮추는 효과적인 제도예요.",
+  	"exp_en": "Since the deposit is refunded upon cup return, it's an effective system that increases the recycling rate of disposable items and lowers processing costs."
+  },
+  {
+  	"emoji": "📝",
+  	"q": "쇼핑 전에 '꼭 필요한 것' 목록을 만들면 쓰레기 줄이기에 좋다.",
+  	"q_en": "Making a list of 'absolutely needed items' before shopping is good for reducing waste.",
+  	"a": "O",
+  	"exp": "충동적인 소비를 막고 계획적인 소비를 하는 것이 쓰레기를 줄이는 첫걸음이에요.",
+  	"exp_en": "Preventing impulsive consumption and practicing planned consumption is the first step to reducing waste."
+  },
+  {
+  	"emoji": "🧑‍🤝‍🧑",
+  	"q": "제로웨이스트는 완벽하게 쓰레기를 줄이는 사람들만의 이야기다.",
+  	"q_en": "Zero Waste is only about people who perfectly reduce their trash.",
+  	"a": "X",
+  	"exp": "완벽이 아니라 ‘조금씩 줄이는 사람들의 실천’이 제로웨이스트입니다.",
+  	"exp_en": "Zero Waste is the **'practice of people reducing little by little'**, not perfection."
+  },
+  {
+  	"emoji": "🏙️",
+  	"q": "내가 바꾸는 작은 행동도 도시 전체의 자원 순환을 바꿀 수 있다.",
+  	"q_en": "A small action I change can alter the entire city's resource circulation.",
+  	"a": "O",
+  	"exp": "개인의 변화가 모이면 정책과 시스템도 바뀝니다.",
+  	"exp_en": "When individual changes accumulate, policies and systems also change."
+  }
+],
+               [
+  {
+  	"emoji": "🚚",
+  	"q": "분리배출만 잘하면 모든 쓰레기가 재활용된다.",
+  	"q_en": "If we sort waste properly, all of it will be recycled.",
+  	"a": "X",
+  	"exp": "실제로는 오염, 혼합 등으로 절반 이상이 소각·매립됩니다.",
+  	"exp_en": "In reality, more than half is incinerated or landfilled due to contamination and mixture."
+  },
+  {
+  	"emoji": "💰",
+  	"q": "폐기물 배출량에 따라 세금을 다르게 부과하는 것은 제로웨이스트의 효과적인 정책 수단이다.",
+  	"q_en": "Imposing different taxes based on waste generation is an effective policy tool for Zero Waste.",
+  	"a": "O",
+  	"exp": "**경제적 불이익(Disincentive)**은 시민의 쓰레기 배출 행동을 강력하게 통제할 수 있어요.",
+  	"exp_en": "**Economic disincentives** can strongly control citizens' waste disposal behavior."
+  },
+  {
+  	"emoji": "🏭",
+  	"q": "재활용이 어려운 제품을 생산하는 기업에 세금을 부과하는 것은 기업 활동 방해이다.",
+  	"q_en": "Taxing companies that produce difficult-to-recycle products is an interference with business activities.",
+  	"a": "X",
+  	"exp": "**'오염자 부담 원칙'**에 따라 재활용이 어려운 제품 생산에 책임을 묻는 것은 순환 경제의 핵심 원칙이에요.",
+  	"exp_en": "Holding producers accountable for difficult-to-recycle products, based on the **'Polluter Pays Principle'**, is a core principle of the circular economy."
+  },
+  {
+  	"emoji": "🧹",
+  	"q": "재활용 수거함 주변을 깨끗하게 정리하면 재활용 시스템 효율이 높아진다.",
+  	"q_en": "Keeping the area around recycling bins clean increases the efficiency of the recycling system.",
+  	"a": "O",
+  	"exp": "깨끗한 환경은 이웃의 책임감을 높여 분리배출 참여율과 품질을 모두 향상시켜요.",
+  	"exp_en": "A clean environment boosts neighbor responsibility, improving both participation and quality of waste sorting."
+  },
+  {
+  	"emoji": "🛍️",
+  	"q": "'1+1' 같은 대용량 상품 구매는 장기적으로 폐기물을 줄이는 데 도움이 된다.",
+  	"q_en": "Buying large-volume items like 'Buy One Get One Free' helps reduce waste in the long run.",
+  	"a": "X",
+  	"exp": "필요 이상의 과도한 구매는 결국 낭비와 폐기로 이어지기 쉬워요.",
+  	"exp_en": "Excessive purchases beyond need are likely to lead to waste and disposal."
+  },
+  {
+  	"emoji": "🏪",
+  	"q": "'제로웨이스트 샵'을 늘리면 일반 마트들이 손해를 본다.",
+  	"q_en": "Increasing 'Zero Waste Shops' harms conventional supermarkets.",
+  	"a": "X",
+  	"exp": "It's the direction of a Zero Waste City for conventional supermarkets to also reduce packaging and introduce refill stations, creating a coexisting environment.",
+  	"exp_en": "It's the direction of a Zero Waste City for conventional supermarkets to also reduce packaging and introduce refill stations, creating a coexisting environment."
+  },
+  {
+  	"emoji": "🏘️",
+  	"q": "지역에서 생산된 물건을 사면 쓰레기도 줄어든다.",
+  	"q_en": "Buying locally produced items reduces waste.",
+  	"a": "O",
+  	"exp": "운송·포장 과정이 줄어 자원 낭비가 적습니다.",
+  	"exp_en": "Reduced transportation and packaging mean less resource waste."
+  },
+  {
+  	"emoji": "🥕",
+  	"q": "**'공유 냉장고'**를 운영하여 남는 식재료를 나누는 것은 음식물 쓰레기 감소에 직접적으로 기여한다.",
+  	"q_en": "Operating a **'Community Fridge'** to share surplus food directly contributes to reducing food waste.",
+  	"a": "O",
+  	"exp": "공유냉장고 운영은 음식을 폐기하지 않고 공동체 내에서 **'재사용'**하는 효율적인 방법이에요.",
+  	"exp_en": "Operating a community fridge is an efficient way to **'reuse'** food within the community instead of discarding it."
+  },
+  {
+  	"emoji": "😕",
+  	"q": "나 혼자 실천해도 큰 변화는 없다.",
+  	"q_en": "Practicing alone does not lead to significant change.",
+  	"a": "X",
+  	"exp": "한 사람의 행동이 주변 사람을 움직입니다.",
+  	"exp_en": "One person's action motivates those around them."
+  },
+  {
+  	"emoji": "🏘️",
+  	"q": "내가 실천하면 이웃도 영향을 받는다.",
+  	"q_en": "If I practice it, my neighbors are also influenced.",
+  	"a": "O",
+  	"exp": "행동은 전염됩니다. 지속 가능한 변화는 관계에서 시작돼요. 그게 공동체의 힘이에요.",
+  	"exp_en": "Action is contagious. Sustainable change starts with relationships. That is the power of community."
+  }
+],
+                [
+  {
+  	"emoji": "🏙️",
+  	"q": "도시의 쓰레기 문제는 쓰레기통을 늘리면 해결할 수 있다.",
+  	"q_en": "The city's waste problem can be solved by increasing the number of trash bins.",
+  	"a": "X",
+  	"exp": "쓰레기통을 늘리는 것은 **'처리'**의 문제이지, **'발생'**의 문제가 아니에요. 쓰레기 발생 자체를 줄여야 합니다.",
+  	"exp_en": "Increasing bins is a matter of **'handling'**, not **'generation'**. Waste generation itself must be reduced."
+  },
+  {
+  	"emoji": "🍎",
+  	"q": "흠집이 있거나 모양이 이상한 '못난이 농산물'을 구매하면 환경에 도움이 된다.",
+  	"q_en": "Buying 'ugly produce' with blemishes or unusual shapes helps the environment.",
+  	"a": "O",
+  	"exp": "못난이 농산물도 상품성이 충분하며, 폐기되는 음식물 쓰레기를 줄여줍니다.",
+  	"exp_en": "Ugly produce is still perfectly marketable and reduces food waste that would otherwise be discarded."
+  },
+  {
+  	"emoji": "🛍️",
+  	"q": "'1+1' 같은 대용량 상품 구매는 장기적으로 폐기물을 줄이는 데 도움이 된다.",
+  	"q_en": "Buying large-volume items like 'Buy One Get One Free' helps reduce waste in the long run.",
+  	"a": "X",
+  	"exp": "필요 이상의 과도한 구매는 결국 낭비와 폐기로 이어지기 쉬워요.",
+  	"exp_en": "Excessive purchases beyond need are likely to lead to waste and disposal."
+  },
+  {
+  	"emoji": "💡",
+  	"q": "필요 없는 포장재를 받지 않겠다고 미리 말하는 것은 가장 적극적인 제로웨이스트 실천 중 하나이다.",
+  	"q_en": "Stating in advance that you do not want unnecessary packaging is one of the most proactive Zero Waste practices.",
+  	"a": "O",
+  	"exp": "**'거절하기(Refuse)'**는 쓰레기를 만들지 않는 가장 효과적인 방법이에요.",
+  	"exp_en": "**'Refusing'** is the most effective way to prevent waste from being created."
+  },
+  {
+  	"emoji": "🚰",
+  	"q": "공공식수대를 많이 설치하는 것은 생수병 쓰레기를 줄이는 효과적인 방법이다.",
+  	"q_en": "Installing more public drinking fountains is an effective way to reduce plastic water bottle waste.",
+  	"a": "O",
+  	"exp": "공공식수대 사용은 플라스틱 폐기물과 운송 에너지 낭비를 줄여요.",
+  	"exp_en": "Using public drinking fountains reduces plastic waste and transportation energy waste."
+  },
+  {
+  	"emoji": "🛒",
+  	"q": "비닐봉투 대신 장바구니를 쓴다고 해서 탄소배출이 줄어들지는 않는다.",
+  	"q_en": "Using a reusable shopping bag instead of a plastic bag does not reduce carbon emissions.",
+  	"a": "X",
+  	"exp": "장바구니 사용은 일회용 비닐봉투의 생산, 운송, 처리 과정에서 발생하는 모든 에너지를 절약하여 탄소배출이 감소합니다.",
+  	"exp_en": "Using reusable bags saves energy generated during the production, transport, and disposal of disposable plastic bags, thereby reducing carbon emissions."
+  },
+  {
+  	"emoji": "📦",
+  	"q": "택배 상자 등 포장 쓰레기 문제는 소비자가 해결해야 할 책임이다.",
+  	"q_en": "The issue of packaging waste, such as delivery boxes, is the consumer's sole responsibility to solve.",
+  	"a": "X",
+  	"exp": "기업의 과도한 포장재 사용도 큰 문제이므로 **'생산자 책임'**이 중요합니다.",
+  	"exp_en": "Excessive packaging by companies is also a big problem, so **'Producer Responsibility'** is crucial."
+  },
+  {
+  	"emoji": "✨",
+  	"q": "깨끗하게 헹군 플라스틱 용기는 재활용 공정에서 에너지를 거의 소비하지 않는다.",
+  	"q_en": "Clean-rinsed plastic containers consume little energy in the recycling process.",
+  	"a": "X",
+  	"exp": "세척, 분쇄, 분류 등 재활용 과정 자체에도 많은 에너지가 필요해요.",
+  	"exp_en": "The recycling process itself, including washing, crushing, and sorting, requires a lot of energy."
+  },
+  {
+  	"emoji": "🥤",
+  	"q": "일회용 컵을 다회용 컵으로 대체하는 것은 쓰레기 문제를 완화할 수 있는 효과적이면서도 시급한 방법이다.",
+  	"q_en": "Replacing disposable cups with reusable ones is an effective and urgent way to mitigate the waste problem.",
+  	"a": "O",
+  	"exp": "일회용품 사용을 '줄이는(Reduce)' 것은 제로웨이스트의 가장 중요한 실천 과제입니다.",
+  	"exp_en": "'Reducing' the use of disposable items is the most important task in Zero Waste practice."
+  },
+  {
+  	"emoji": "🤝",
+  	"q": "제로웨이스트는 불편하지만, 실천을 통해 지구를 구할 수 있다는 희망을 준다.",
+  	"q_en": "Zero Waste is inconvenient, but it gives hope that we can save the planet through practice.",
+  	"a": "O",
+  	"exp": "작은 실천들이 모여 세상을 바꾸고, 지속 가능한 미래를 만듭니다.",
+  	"exp_en": "Small practices accumulate to change the world and create a sustainable future."
+  }
+],
+  [
+  {
+  	"emoji": "👕",
+  	"q": "버려지는 폐의류 중 재활용되는 비율은 절반 이상이다.",
+  	"q_en": "The recycling rate for discarded clothing is over half.",
+  	"a": "X",
+  	"exp": "많은 양이 낮은 품질로 인해 소각/매립되어 의류 소비의 윤리적 책임을 제기해요.",
+  	"exp_en": "A large quantity is incinerated/landfilled due to low quality, raising ethical concerns about clothing consumption."
+  },
+  {
+  	"emoji": "🥢",
+  	"q": "배달 시 **'일회용품 안 받기'**는 쓰레기를 줄이는 행동이다.",
+  	"q_en": "Choosing **'No disposable items'** when ordering delivery is an action to reduce waste.",
+  	"a": "O",
+  	"exp": "**'일회용품을 거절(Refuse)'**하는 것은 매우 능동적이고 적극적인 실천이에요.",
+  	"exp_en": "**'Refusing disposable items'** is a very proactive and active practice."
+  },
+  {
+  	"emoji": "🥤",
+  	"q": "일회용 컵을 다회용 컵으로 대체하는 것은 쓰레기 문제 해결의 핵심이다.",
+  	"q_en": "Replacing disposable cups with reusable ones is key to solving the waste problem.",
+  	"a": "O",
+  	"exp": "일회용품 사용을 **'줄이는(Reduce)' 것은 제로웨이스트의 가장 중요한 실천 과제입니다.",
+  	"exp_en": "**'Reducing'** the use of disposable items is the most important task in Zero Waste practice."
+  },
+  {
+  	"emoji": "🏭",
+  	"q": "재활용이 어려운 제품을 생산하는 기업에 세금을 부과하는 것은 기업 활동 방해이다.",
+  	"q_en": "Taxing companies that produce difficult-to-recycle products is an interference with business activities.",
+  	"a": "X",
+  	"exp": "**'오염자 부담 원칙'**에 따라 재활용이 어려운 제품 생산에 책임을 묻는 것은 순환 경제의 핵심 원칙이에요.",
+  	"exp_en": "Holding producers accountable for difficult-to-recycle products, based on the **'Polluter Pays Principle'**, is a core principle of the circular economy."
+  },
+  {
+  	"emoji": "🔍",
+  	"q": "물건의 재료에 관심을 갖는 것은 제로웨이스트와 무관한 행동이다.",
+  	"q_en": "Caring about an item's materials is irrelevant to Zero Waste.",
+  	"a": "X",
+  	"exp": "제품의 수명과 재활용 가능성을 예측하게 하여 책임 있는 소비로 이끌어줘요.",
+  	"exp_en": "It helps predict product lifespan and recyclability, leading to responsible consumption."
+  },
+  {
+  	"emoji": "🏪",
+  	"q": "'제로웨이스트 샵'을 늘리면 일반 마트들이 손해를 본다.",
+  	"q_en": "Increasing 'Zero Waste Shops' harms conventional supermarkets.",
+  	"a": "X",
+  	"exp": "일반 마트들도 포장재 줄이기에 동참하고 리필 스테이션을 도입하며 상생하는 것이 제로웨이스트 도시의 방향이에요.",
+  	"exp_en": "It's the direction of a Zero Waste City for conventional supermarkets to also reduce packaging and introduce refill stations, creating a coexisting environment."
+  },
+  {
+  	"emoji": "🙅",
+  	"q": "쓰레기를 줄이려면 ‘새로 사지 않는 것’부터 시작해야 한다.",
+  	"q_en": "To reduce waste, you should start with 'not buying new things'.",
+  	"a": "O",
+  	"exp": "감량의 핵심은 소비 단계에서 ‘필요한 만큼만’ 사는 것이죠.",
+  	"exp_en": "The core of reduction is buying 'only what is needed' at the consumption stage."
+  },
+  {
+  	"emoji": "🏙️",
+  	"q": "제로웨이스트 도시 만들기는 소각장을 짓는 것보다 돈이 많이 든다.",
+  	"q_en": "Creating a Zero Waste City costs more than building an incinerator.",
+  	"a": "X",
+  	"exp": "제로웨이스트 도시에서는 폐기물 처리 비용이 줄어들고 일자리 창출 효과가 입증되고 있습니다.",
+  	"exp_en": "Zero Waste cities have proven to reduce waste processing costs and create jobs."
+  },
+  {
+  	"emoji": "🌈",
+  	"q": "쓰레기를 줄이는 도시일수록 시민의 삶의 질이 높다.",
+  	"q_en": "Cities that reduce waste tend to have a higher quality of life for citizens.",
+  	"a": "O",
+  	"exp": "A cleaner environment benefits health, economy, and community.",
+  	"exp_en": "A cleaner environment benefits health, economy, and community."
+  },
+  {
+  	"emoji": "🧑‍🤝‍🧑",
+  	"q": "제로웨이스트 도시는 결국 ‘함께 사는 방식’을 다시 만드는 일이다.",
+  	"q_en": "A Zero Waste City is ultimately about redefining 'how we live together'.",
+  	"a": "O",
+  	"exp": "쓰레기 문제 해결도 공동체적 가치와 관계 회복이 핵심입니다.",
+  	"exp_en": "Solving the waste problem is fundamentally about communal values and restoring relationships."
+  }
+]
+            ]
+}
