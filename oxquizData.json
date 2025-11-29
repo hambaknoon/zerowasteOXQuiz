@@ -1,15 +1,15 @@
 {
 "elementary": [
-  [
-    {
-      "emoji": "🥤",
-      "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
-      "q_en": "Recycling can turn all trash into resources.",
-      "a": "X",
-      "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
-      "exp_en": "Not all waste can be recycled. Reducing is the best option!"
-    },
-    {
+                [
+                    {
+    "emoji": "🥤",
+    "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
+    "q_en": "Recycling can turn all trash into resources.",
+    "a": "X",
+    "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
+    "exp_en": "Not all waste can be recycled. Reducing is the best option!"
+  },
+  {
     "emoji": "🐟",
     "q": "바다 속 물고기들은 플라스틱을 먹지 않아요.",
     "q_en": "Fish in the ocean don't eat plastic.",
