@@ -304,6 +304,8 @@
         cardBack.classList.remove('card-correct', 'card-incorrect');
         nextBtn.classList.add('hidden');
 
+        alert("선택한 언어:"+ currentLang);
+        
         // 내용 업데이트
         // ⭐ 문제 번호 표시 언어 업데이트
         questionNumberText.textContent = `${langData.quiz.question} ${currentQuestionIndex + 1} / ${currentQuizSet.length}`;
