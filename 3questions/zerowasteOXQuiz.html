@@ -177,7 +177,7 @@
     async function loadQuizData() {
         try {
             // ⭐ 퀴즈 데이터 파일 이름을 언어와 관련 없이 단일 파일로 가정 (oxquizData.json)
-            const response = await fetch('./oxquizData.json'); 
+            const response = await fetch('./oxquizData3questions.json'); 
             if (!response.ok) {
                 throw new Error(`HTTP 오류: ${response.status}`);
             }
