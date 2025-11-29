@@ -61,15 +61,16 @@
             results: {
                 complete: "퀴즈 완료!",
                 pledgeTitle: "📝 나의 제로웨이스트 다짐",
+                scoreText: "총 {total}문제 중 {score}개 정답", // ⭐ 추가 또는 수정
                 restart: "다시 시작하기",
                 participantId: "참가 ID:",
                 statsTitle: "🌍 누적 통계 (성인 전체)",
                 totalParticipants: "총 참가 횟수:",
                 averageScore: "평균 정답률:"
-            },
-            pledges: {
-                adult: "필요하지 않은 것은 NO! 지갑을 열기 전에 한 번 더 생각합니다."
-            }
+                },
+                pledges: {
+                    adult: "필요하지 않은 것은 NO! 지갑을 열기 전에 한 번 더 생각합니다."
+                }
         },
         en: {
             title: "Zero Waste Champion O/X Quiz",
@@ -93,6 +94,7 @@
             results: {
                 complete: "Quiz Complete!",
                 pledgeTitle: "📝 My Zero Waste Pledge",
+                scoreText: "{score} correct answers out of {total} questions", // ⭐ 추가 또는 수정
                 restart: "Restart",
                 participantId: "Participant ID:",
                 statsTitle: "🌍 Accumulated Stats (Adult Total)",
@@ -360,41 +362,50 @@
         }
     }
     
-    function showResults() {
-        showScreen('results');
-        const langData = translations[currentLang];
-        const totalQuestions = currentQuizSet.length;
-        
-        scoreText.textContent = `${totalQuestions} ${currentLang === 'ko' ? '문제 중' : 'out of'} ${score} ${currentLang === 'ko' ? '개 정답!' : 'correct!'}`;
-        pledgeText.textContent = langData.pledges.adult; 
-        localIdDisplay.textContent = `${langData.results.participantId} ${localParticipantId_internal}`;
-        
-        if (score === totalQuestions) {
-            resultEmoji.textContent = '👑';
-        } else if (score >= totalQuestions * 0.7) {
-            resultEmoji.textContent = '🌟';
-        } else {
-            resultEmoji.textContent = '💡';
-        }
-        
-        const resultData = {
-            id: localParticipantId_internal,
-            ageGroup: 'adult', 
-            score: score,
-            totalQuestions: totalQuestions,
-            quizSetIndex: selectedSetIndex,
-            timestamp: new Date().toISOString(),
-            answerLog: answerLog,
-            correctLog: correctLog,
-            language: currentLang 
-        };
-        saveResultLocally(resultData);
-        saveResult(resultData);
-
-        loadStats();
-        
-        showScreen('results');
+    // showResults 함수를 아래 코드로 대체하세요.
+function showResults() {
+    showScreen('results');
+    const langData = translations[currentLang];
+    const totalQuestions = currentQuizSet.length;
+    
+    // ⭐ 텍스트 내용 수정: scoreText와 pledgeText의 내용을 언어 변수로 변경
+    
+    // 1. 점수 텍스트
+    scoreText.textContent = `${langData.results.scoreText ? langData.results.scoreText.replace('{total}', totalQuestions).replace('{score}', score) : `${totalQuestions} ${currentLang === 'ko' ? '문제 중' : 'out of'} ${score} ${currentLang === 'ko' ? '개 정답!' : 'correct!'}`}`;
+    
+    // 2. 다짐 텍스트
+    pledgeText.textContent = langData.pledges.adult; 
+    
+    // 3. ID 텍스트
+    localIdDisplay.textContent = `${langData.results.participantId} ${localParticipantId_internal}`;
+    
+    // 4. 이모지 설정
+    if (score === totalQuestions) {
+        resultEmoji.textContent = '👑';
+    } else if (score >= totalQuestions * 0.7) {
+        resultEmoji.textContent = '🌟';
+    } else {
+        resultEmoji.textContent = '💡';
     }
+    
+    const resultData = {
+        id: localParticipantId_internal,
+        ageGroup: 'adult', 
+        score: score,
+        totalQuestions: totalQuestions,
+        quizSetIndex: selectedSetIndex,
+        timestamp: new Date().toISOString(),
+        answerLog: answerLog,
+        correctLog: correctLog,
+        language: currentLang 
+    };
+    saveResultLocally(resultData);
+    saveResult(resultData);
+
+    loadStats();
+    
+    showScreen('results');
+}
 
     // ----------------------------------------------------
     // 5. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합 (수정 완료)
