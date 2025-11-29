@@ -37,11 +37,12 @@
     const LANG_STORAGE_KEY = 'zero_waste_quiz_lang_adult'; 
     const QUIZ_DATA_KEY = 'OXQuizfor3'; // JSON 데이터의 키 값을 반영
 
-    // ⭐ 0-1. 다국어 텍스트 데이터
+    // ⭐ 0-1. 다국어 텍스트 데이터 (startQuizBtn 라벨 추가)
     const translations = {
         ko: {
             title: "제로웨이스트 챔피언 OX 퀴즈",
             subtitle: "언어를 선택하고 퀴즈를 시작하세요!",
+            startQuizBtn: "퀴즈 시작하기", // ⭐ 추가된 라벨
             quizTitles: {
                 adult: "제로웨이스트 챔피언 퀴즈"
             },
@@ -73,6 +74,7 @@
         en: {
             title: "Zero Waste Champion O/X Quiz",
             subtitle: "Select your language and start the quiz!",
+            startQuizBtn: "Start Quiz", // ⭐ 추가된 라벨
             quizTitles: {
                 adult: "Zero Waste Champion Quiz"
             },
@@ -198,8 +200,8 @@
     let correctLog = [];
     let screens = {}; 
 
-    // DOM 요소 변수
-    let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle; 
+    // DOM 요소 변수 (startQuizBtn 전역 변수 추가)
+    let oBtn, xBtn, nextBtn, restartBtn, backToStartBtn, quizTitle, startQuizBtn; 
     let cardInner, questionNumberText, questionText, explanationText, answerBtnsContainer;
     let scoreText, resultEmoji, pledgeText, answerStatusText, correctAnswerText;
     let cardFront, cardEmojiFront, answerEmoji, localIdDisplay, cardBack;
@@ -217,6 +219,11 @@
 
         mainTitle.textContent = langData.title;
         mainSubtitle.textContent = langData.subtitle;
+        
+        // ⭐ 퀴즈 시작 버튼 텍스트 업데이트 로직 추가
+        if (startQuizBtn) {
+            startQuizBtn.textContent = langData.startQuizBtn;
+        }
         
         if (quizBackToStartBtn) {
             quizBackToStartBtn.textContent = langData.quiz.backToStart;
@@ -252,12 +259,6 @@
             currentLang = langCode;
             localStorage.setItem(LANG_STORAGE_KEY, langCode); 
             updateUI();
-
-           // if (quizData) {
-           //     startAdultQuiz();
-           // } else {
-           //      console.log("데이터 로드 대기 중...");
-           // }
         }
     }
 
@@ -396,21 +397,19 @@
     }
 
     // ----------------------------------------------------
-    // 5. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합 (수정된 부분)
+    // 5. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합 (수정 완료)
     // ----------------------------------------------------
 
     document.addEventListener('DOMContentLoaded', async () => {
         
-        // --- 1. DOM 요소 변수 할당 (모두 최상단으로 이동) ---
+        // --- 1. DOM 요소 변수 할당 (항상 최상단에 배치) ---
         oBtn = document.getElementById('o-btn');
         xBtn = document.getElementById('x-btn');
         nextBtn = document.getElementById('next-btn');
         restartBtn = document.getElementById('restart-btn');
         backToStartBtn = document.getElementById('back-to-start-btn');
         quizTitle = document.getElementById('quiz-title');
-        
-        // '퀴즈 시작하기' 버튼 할당
-        const startQuizBtn = document.getElementById('start-quiz-btn'); 
+        startQuizBtn = document.getElementById('start-quiz-btn'); 
 
         screens = {
             ageSelection: document.getElementById('age-selection-screen'),
@@ -432,7 +431,7 @@
         // 언어/결과 관련 DOM 요소 할당
         mainTitle = document.getElementById('main-title');
         mainSubtitle = document.getElementById('main-subtitle');
-        // quizBackToStartBtn, quizNextBtn 등은 이미 상단에 할당된 변수 사용
+        // quizBackToStartBtn, quizNextBtn 변수는 이미 상단에 할당되어 사용됨
         resultsCompleteText = document.getElementById('results-complete-text');
         resultsPledgeTitle = document.getElementById('pledge-title');
         resultsParticipantId = document.getElementById('local-id-display');
@@ -453,7 +452,6 @@
         // --- 2. 퀴즈 데이터 로딩 (비동기) ---
         const dataLoaded = await loadQuizData();	
         if (!dataLoaded) {
-            // 데이터 로드 실패 시, 시작 버튼 비활성화 및 안내
             if (startQuizBtn) {
                 startQuizBtn.disabled = true;
                 startQuizBtn.textContent = "퀴즈 데이터를 로드할 수 없습니다.";
@@ -461,7 +459,7 @@
             return;
         }
 
-        // --- 3. 이벤트 리스너 연결 (데이터 로드 완료 후) ---
+        // --- 3. 이벤트 리스너 연결 (데이터 로드 완료 및 DOM 할당 완료 후) ---
         
         // A. 퀴즈 진행 버튼 리스너
         oBtn.addEventListener('click', () => checkAnswer('O'));
@@ -476,7 +474,7 @@
         document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
         document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
         
-        // D. 퀴즈 시작 버튼 리스너 (데이터 로드가 완료되었으므로 바로 퀴즈 시작)
+        // D. 퀴즈 시작 버튼 리스너
         if (startQuizBtn) {
             startQuizBtn.addEventListener('click', () => {
                 startAdultQuiz(); // 퀴즈 시작
@@ -484,7 +482,7 @@
         }
 
         // --- 4. 초기 화면 설정 ---
-        updateUI();
+        updateUI(); // 이제 startQuizBtn 텍스트가 여기서 설정됩니다.
         showScreen('ageSelection');
     });
 
@@ -550,7 +548,7 @@ border-color: #ef4444 !important;
         <div id="age-selection-screen" class="w-full max-w-lg md:max-w-xl text-center">
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl relative"> 
                 
-                <div class="text-6xl md:text-7xl mb-4">🧑‍🤝‍🧑</div> 
+                <div id="main-emoji" class="text-6xl md:text-7xl mb-4">🧑‍🤝‍🧑</div> 
                 <h1 id="main-title" class="text-2xl md:text-3xl font-bold text-emerald-700 mb-3">제로웨이스트 챔피언 OX 퀴즈</h1> 
                 <p id="main-subtitle" class="text-gray-600 mb-8 text-lg">언어를 선택하고 퀴즈를 시작하세요!</p> 
                 
@@ -562,8 +560,8 @@ border-color: #ef4444 !important;
                 </div>
                 
                 <button id="start-quiz-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 rounded-xl text-xl shadow-lg transition-transform transform hover:scale-105">
-                    퀴즈 시작하기
                 </button>
+                
                 <p class="text-xs text-gray-400 mt-6 hidden">⚠️ 오프라인 모드: 퀴즈 결과는 이 기기에 임시 저장됩니다. 최종버전이 되자!! </p>
             </div>
         </div>
