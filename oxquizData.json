@@ -84,7 +84,7 @@
     {
       "emoji": "🪱",
       "q": "쓰레기를 버리면 땅속에서 바로 사라져요.",
-      "q_en": "When trash is thrown away, it disappears immediately in the ground.",   
+      "q_en": "When trash is thrown away, it disappears immediately in the ground.",
       "a": "X",
       "exp": "쓰레기는 바로 사라지지 않고 쌓여요. \n쌓인 쓰레기도 사라지는데 오랜 시간이 걸려요.",
       "exp_en": "Trash doesn't disappear immediately; it accumulates. \nIt takes a very long time for the accumulated trash to decompose."
