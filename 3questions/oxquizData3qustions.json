@@ -1,0 +1,57 @@
+{
+  "OXQuixfor3": [
+    [ // 🌟 퀴즈 세트 1 (3문제)
+      {
+        "emoji": "🥤",
+        "q": "재활용은 모든 쓰레기를 자원으로 바꿀 수 있어요.",
+        "q_en": "Recycling can turn all trash into resources.",
+        "a": "X",
+        "exp": "모든 쓰레기가 재활용 되지 않아요. 줄이는게 최고!",
+        "exp_en": "Not all waste can be recycled. Reducing is the best option!"
+      },
+      {
+        "emoji": "🐟",
+        "q": "바다 속 물고기들은 플라스틱을 먹지 않아요.",
+        "q_en": "Fish in the ocean don't eat plastic.",
+        "a": "X",
+        "exp": "물고기들이 플라스틱을 먹이인 줄 알고 먹어요.",
+        "exp_en": "Fish mistake plastic for food and eat it."
+      },
+      {
+        "emoji": "♻️",
+        "q": "남긴 음식물 쓰레기는 모두 퇴비로 완벽하게 재활용돼요.",
+        "q_en": "All leftover food waste is perfectly recycled into compost.",
+        "a": "X",
+        "exp": "많은 양이 소각되거나 매립되어 환경을 오염시켜요.",
+        "exp_en": "A large amount of food waste is incinerated or landfilled, polluting the environment."
+      }
+    ],
+    [ // 🌟 퀴즈 세트 2 (3문제)
+      {
+        "emoji": "🪱",
+        "q": "쓰레기를 버리면 땅속에서 바로 사라져요.",
+        "q_en": "When trash is thrown away, it disappears immediately in the ground.",
+        "a": "X",
+        "exp": "쓰레기는 바로 사라지지 않고 쌓여요. 쌓인 쓰레기도 사라지는데 오랜 시간이 걸려요.",
+        "exp_en": "Trash doesn't disappear immediately it accumulates. It takes a very long time for the accumulated trash to decompose."
+      },
+      {
+        "emoji": "🚚",
+        "q": "분리배출을 열심히 하면, 모든 쓰레기가 재활용이 돼요.",
+        "q_en": "If we separate our trash diligently, all of it will be recycled.",
+        "a": "X",
+        "exp": "일부만 재활용이 되어요. 쓰레기 **'양'** 자체를 줄여야 쓰레기가 줄어요.",
+        "exp_en": "Only a portion is recycled. We must reduce the **'amount'** of trash itself to decrease waste."
+      },
+      {
+        "emoji": "🏷️",
+        "q": "플라스틱병의 라벨 스티커는 떼지 않고 버려도 재활용에 문제없어요.",
+        "q_en": "It's fine to throw away plastic bottles without removing the label stickers, as it won't affect recycling.",
+        "a": "X",
+        "exp": "스티커는 재활용을 방해해요. 꼭 떼서 버려주세요!",
+        "exp_en": "Stickers interfere with the recycling process. Please be sure to remove them before disposing!"
+      }
+    ]
+    
+  ]
+}
