@@ -396,38 +396,21 @@
     }
 
     // ----------------------------------------------------
-    // 5. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합
+    // 5. DOMContentLoaded: 비동기 로딩 및 이벤트 리스너 통합 (수정된 부분)
     // ----------------------------------------------------
 
     document.addEventListener('DOMContentLoaded', async () => {
-        // --- DOM 요소 변수 할당 ---
-        // --- 이벤트 리스너 연결 ---
-        oBtn.addEventListener('click', () => checkAnswer('O'));
-        xBtn.addEventListener('click', () => checkAnswer('X'));
-        nextBtn.addEventListener('click', nextQuestion);
         
-        restartBtn.addEventListener('click', () => showScreen('ageSelection')); // ⭐ 수정: 결과 화면에서 시작 버튼을 누르면 언어 선택 화면으로 이동
-    
-        // ⭐ 수정: "처음으로" 버튼을 누르면 언어 선택 화면으로 이동
-        backToStartBtn.addEventListener('click', () => showScreen('ageSelection'));
-
-        // ⭐ 추가: 언어 선택 화면의 '퀴즈 시작하기' 버튼에 이벤트 연결
-        const startQuizBtn = document.getElementById('start-quiz-btn');
-        if (startQuizBtn) {
-            startQuizBtn.addEventListener('click', () => {
-                if (quizData) {
-                    startAdultQuiz(); // 퀴즈 시작
-                } else {
-                    alert("퀴즈 데이터를 로드하는 중입니다. 잠시 후 다시 시도해 주세요.");
-                }
-            });
-        }
-
-        // 언어 선택 버튼 이벤트 리스너 연결 (이제는 언어만 설정)
-        document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
-        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-            
+        // --- 1. DOM 요소 변수 할당 (모두 최상단으로 이동) ---
+        oBtn = document.getElementById('o-btn');
+        xBtn = document.getElementById('x-btn');
+        nextBtn = document.getElementById('next-btn');
+        restartBtn = document.getElementById('restart-btn');
+        backToStartBtn = document.getElementById('back-to-start-btn');
         quizTitle = document.getElementById('quiz-title');
+        
+        // '퀴즈 시작하기' 버튼 할당
+        const startQuizBtn = document.getElementById('start-quiz-btn'); 
 
         screens = {
             ageSelection: document.getElementById('age-selection-screen'),
@@ -446,11 +429,10 @@
         answerStatusText = document.getElementById('answer-status-text');
         correctAnswerText = document.getElementById('correct-answer-text');
         
-        // 언어 관련 DOM 요소 할당
+        // 언어/결과 관련 DOM 요소 할당
         mainTitle = document.getElementById('main-title');
         mainSubtitle = document.getElementById('main-subtitle');
-        quizBackToStartBtn = document.getElementById('back-to-start-btn');
-        quizNextBtn = document.getElementById('next-btn');
+        // quizBackToStartBtn, quizNextBtn 등은 이미 상단에 할당된 변수 사용
         resultsCompleteText = document.getElementById('results-complete-text');
         resultsPledgeTitle = document.getElementById('pledge-title');
         resultsParticipantId = document.getElementById('local-id-display');
@@ -468,25 +450,40 @@
         answerEmoji = document.getElementById('answer-emoji');
         localIdDisplay = document.getElementById('local-id-display');
 
-        // 언어 선택 버튼 이벤트 리스너 연결
-        document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
-        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-        
-        // --- 퀴즈 데이터 로딩 (비동기) ---
+        // --- 2. 퀴즈 데이터 로딩 (비동기) ---
         const dataLoaded = await loadQuizData();	
         if (!dataLoaded) {
+            // 데이터 로드 실패 시, 시작 버튼 비활성화 및 안내
+            if (startQuizBtn) {
+                startQuizBtn.disabled = true;
+                startQuizBtn.textContent = "퀴즈 데이터를 로드할 수 없습니다.";
+            }
             return;
         }
 
-        // --- 이벤트 리스너 연결 ---
+        // --- 3. 이벤트 리스너 연결 (데이터 로드 완료 후) ---
+        
+        // A. 퀴즈 진행 버튼 리스너
         oBtn.addEventListener('click', () => checkAnswer('O'));
         xBtn.addEventListener('click', () => checkAnswer('X'));
         nextBtn.addEventListener('click', nextQuestion);
         
-        restartBtn.addEventListener('click', () => startAdultQuiz()); 
-        backToStartBtn.addEventListener('click', () => startAdultQuiz());
+        // B. 화면 이동 버튼 리스너 (언어 선택 화면으로 이동)
+        restartBtn.addEventListener('click', () => showScreen('ageSelection')); 
+        backToStartBtn.addEventListener('click', () => showScreen('ageSelection'));
+        
+        // C. 언어 선택 버튼 리스너 (언어만 설정)
+        document.getElementById('lang-ko').addEventListener('click', () => setLanguage('ko'));
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+        
+        // D. 퀴즈 시작 버튼 리스너 (데이터 로드가 완료되었으므로 바로 퀴즈 시작)
+        if (startQuizBtn) {
+            startQuizBtn.addEventListener('click', () => {
+                startAdultQuiz(); // 퀴즈 시작
+            });
+        }
 
-        // 초기 화면 설정 전에 UI 업데이트를 통해 언어 적용
+        // --- 4. 초기 화면 설정 ---
         updateUI();
         showScreen('ageSelection');
     });
